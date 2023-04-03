@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import slugify from 'slugify';
+
+
+// [
+// 	{
+// 		id: 'JUD',
+// 		bibleId: '685d1470fe4d5c3b-01',
+// 		abbreviation: 'Jude',
+// 		name: 'Jude',
+// 		nameLong: 'The Epistle of Jude'
+// 	}
+// ]
+
+export async function getStaticPaths() {
+	const key = import.meta.env.bible_api_key;
+	const url = import.meta.env.bible_url;
+	const bible = import.meta.env.bible_id;
+
+	const response = await fetch(`${url}/v1/bibles/${bible}/books`, {
+		headers: {
+			"api-key": key
+		}
+	});
+	const body = await response.json();
+	return body.data.map((post) => ({
+			params: { book: slugify(post.name).toLowerCase() },
+			props: { book: post }
+	}));
+}
+const { book } = Astro.props;
+---
+
+<Layout title={book.name}>
+	<main>
+		<h1>{book.name}</h1>
+		<p>{book.nameLong}</p>
+	</main>
+</Layout>
