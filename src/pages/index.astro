@@ -1,0 +1,38 @@
+---
+import Layout from "../layouts/Layout.astro";
+import slugify from "slugify";
+
+// [
+// 	{
+// 		id: 'JUD',
+// 		bibleId: '685d1470fe4d5c3b-01',
+// 		abbreviation: 'Jude',
+// 		name: 'Jude',
+// 		nameLong: 'The Epistle of Jude'
+// 	}
+// ]
+
+const key = import.meta.env.bible_api_key;
+const url = import.meta.env.bible_url;
+const bible = import.meta.env.bible_id;
+
+const response = await fetch(`${url}/v1/books`, {});
+const books = await response.json();
+
+console.log(books);
+---
+
+<Layout title='Bible'>
+	<main>
+		<h1>The Bible</h1>
+		<ul>
+			{
+				books.map((book) => (
+					<li>
+						<a href={slugify(book.name, { lower: true })}>{book.name}</a>
+					</li>
+				))
+			}
+		</ul>
+	</main>
+</Layout>

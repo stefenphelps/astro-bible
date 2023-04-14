@@ -1,40 +1,56 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import slugify from 'slugify';
-
-
-// [
-// 	{
-// 		id: 'JUD',
-// 		bibleId: '685d1470fe4d5c3b-01',
-// 		abbreviation: 'Jude',
-// 		name: 'Jude',
-// 		nameLong: 'The Epistle of Jude'
-// 	}
-// ]
+import Layout from "../layouts/Layout.astro";
+import slugify from "slugify";
 
 export async function getStaticPaths() {
-	const key = import.meta.env.bible_api_key;
 	const url = import.meta.env.bible_url;
-	const bible = import.meta.env.bible_id;
-
-	const response = await fetch(`${url}/v1/bibles/${bible}/books`, {
-		headers: {
-			"api-key": key
-		}
-	});
-	const body = await response.json();
-	return body.data.map((post) => ({
-			params: { book: slugify(post.name).toLowerCase() },
-			props: { book: post }
+	const response = await fetch(`${url}/v1/books`);
+	const books = await response.json();
+	return books.map((post) => ({
+		params: { book: slugify(post.name, { lower: true }) },
+		props: { book: post }
 	}));
 }
+
 const { book } = Astro.props;
+// {
+// 	id: 66,
+// 	name: 'Revelation',
+// 	testament: 'NT',
+// 	genre: { id: 8, name: 'Apocalyptic' }
+// }
+
+const url = import.meta.env.bible_url;
+const request = await fetch(`${url}/v1/books/${book.id}/chapters`);
+const chapters = await request.json();
+
+const content = [];
+for await (const chapter of chapters) {
+	const request = await fetch(`${url}/v1/books/${book.id}/chapters/${chapter.id}?translation=ESV`);
+	const chapter_content = await request.json();
+	console.log(chapter_content);
+	content.push(chapter_content);
+}
+
+// {
+// 	id: 14036012,
+// 	book: [Object],
+// 	chapterId: 36,
+// 	verseId: 12,
+// 	verse: 'And he did that which was evil in the sight of the LORD his God, and humbled not himself before Jeremiah the prophet speaking from the mouth of the LORD.'
+// },
 ---
 
 <Layout title={book.name}>
 	<main>
 		<h1>{book.name}</h1>
-		<p>{book.nameLong}</p>
+		{
+			content[0].map((chapter) => (
+				<p>
+					<sup>{chapter.verseId}</sup>
+					{chapter.verse}
+				</p>
+			))
+		}
 	</main>
 </Layout>
