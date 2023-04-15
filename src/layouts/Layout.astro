@@ -77,13 +77,12 @@ const { title } = Astro.props;
 						Snackbar.show({
 							text: "Update available.",
 							actionText: "Update",
-							actionTextColor: "#fff",
+							actionTextColor: "var(--pink)",
 							onActionClick: updateSW(true)
 						});
 					},
 					onOfflineReady() {
 						Snackbar.show({
-							actionTextColor: "#fff",
 							text: "Offline ready."
 						});
 					}

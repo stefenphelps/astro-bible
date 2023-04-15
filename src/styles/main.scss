@@ -4,6 +4,7 @@
 
 /* @link https://utopia.fyi/type/calculator?c=320,18,1.2,1240,20,1.25,5,1,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
 :root {
+	// font sizes
 	/* Step -1: 15.00px → 16.00px */
 	--step--1: clamp(0.94rem, calc(0.92rem + 0.11vw), 1rem);
 	/* Step 0: 18.00px → 20.00px */
@@ -19,9 +20,11 @@
 	/* Step 5: 44.79px → 61.04px */
 	--step-5: clamp(2.8rem, calc(2.45rem + 1.77vw), 3.82rem);
 
+	// colors
 	--tan: #fff7ed;
 	--transparent-tan: rgba(255, 247, 237, 0.804);
 	--black: #292524;
+	--pink: #f0abfc;
 }
 
 body {
@@ -38,6 +41,7 @@ body {
 header {
 	backdrop-filter: blur(24px);
 	position: sticky;
+	z-index: 10;
 	top: -1px;
 	background: var(--transparent-tan);
 	transition: 350ms ease;
@@ -78,7 +82,7 @@ a {
 	text-decoration: none;
 	&:hover {
 		box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
-			#f0abfc 0px -0.4em 0px 0px inset;
+			var(--pink) 0px -0.4em 0px 0px inset;
 	}
 }
 
@@ -107,13 +111,26 @@ a {
 
 .chapter {
 	scroll-margin-top: 3.5em;
-	p:first-of-type {
-		margin-top: 5rem;
-		&::first-letter {
-			font-size: var(--step-5);
-			line-height: 0;
-			font-weight: 200;
-			margin-right: 5px;
+	p {
+		position: relative;
+		scroll-margin-top: 3.5em;
+		&:hover {
+			&::before {
+				content: "🔖";
+				display: block;
+				position: absolute;
+				top: 0;
+				left: -1.5em;
+			}
+		}
+		&:first-of-type {
+			margin-top: 5rem;
+			&::first-letter {
+				font-size: var(--step-5);
+				line-height: 0;
+				font-weight: 200;
+				margin-right: 5px;
+			}
 		}
 	}
 }
