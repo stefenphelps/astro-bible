@@ -19,6 +19,7 @@ export default defineConfig({
 				theme_color: "#fff7ed",
 				background_color: "#fff7ed",
 				display: "standalone",
+				includeAssets: ["*.{png,ico,svg,jpg,xml}"],
 				icons: [
 					{
 						src: "/pwa-192x192.png",
