@@ -1,38 +1,49 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import slugify from "slugify";
+import bible from "../data/en_kjv.json";
 
 // [
 // 	{
-// 		id: 'JUD',
-// 		bibleId: '685d1470fe4d5c3b-01',
-// 		abbreviation: 'Jude',
-// 		name: 'Jude',
-// 		nameLong: 'The Epistle of Jude'
+// 	"abbrev" : "abbrev"
+// 	"book" : "name"
+// 	"chapters":
+// 		[
+// 			["Verse 1", "Verse 2", "Verse 3", "..."],
+// 			["Verse 1", "Verse 2", "Verse 3", "..."],
+// 			["Verse 1", "Verse 2", "Verse 3", "..."]
+// 		]
 // 	}
 // ]
-
-const key = import.meta.env.bible_api_key;
-const url = import.meta.env.bible_url;
-const bible = import.meta.env.bible_id;
-
-const response = await fetch(`${url}/v1/books`, {});
-const books = await response.json();
-
-console.log(books);
 ---
 
 <Layout title='Bible'>
-	<main>
-		<h1>The Bible</h1>
-		<ul>
+	<main class='wrapper'>
+		<ol class="books">
 			{
-				books.map((book) => (
+				bible.map((book) => (
 					<li>
 						<a href={slugify(book.name, { lower: true })}>{book.name}</a>
+						<ol class="books-chapters">
+							{book.chapters.map((chapter, index) => (
+								<li>
+									<a href=`${slugify(book.name, { lower: true })}/#chapter-${index + 1}`>Chapter {index + 1}</a>
+								</li>
+							))}
+						</ol>
 					</li>
 				))
 			}
-		</ul>
+		</ol>
 	</main>
 </Layout>
+
+<script>
+	const books = document.querySelectorAll('main > ol > li > a');
+	books.forEach(function(book) {
+		book.addEventListener('click', function(event) {
+			event.preventDefault();
+			book.classList.toggle('active');
+		})
+	});
+</script>

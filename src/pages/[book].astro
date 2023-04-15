@@ -1,55 +1,48 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import slugify from "slugify";
+import bible from "../data/en_kjv.json";
+import "tocbot/dist/tocbot.css";
+
+// [
+// 	{
+// 	"abbrev" : "abbrev"
+// 	"book" : "name"
+// 	"chapters":
+// 		[
+// 			["Verse 1", "Verse 2", "Verse 3", "..."],
+// 			["Verse 1", "Verse 2", "Verse 3", "..."],
+// 			["Verse 1", "Verse 2", "Verse 3", "..."]
+// 		]
+// 	}
+// ]
 
 export async function getStaticPaths() {
-	const url = import.meta.env.bible_url;
-	const response = await fetch(`${url}/v1/books`);
-	const books = await response.json();
-	return books.map((post) => ({
+	return bible.map((post) => ({
 		params: { book: slugify(post.name, { lower: true }) },
 		props: { book: post }
 	}));
 }
 
 const { book } = Astro.props;
-// {
-// 	id: 66,
-// 	name: 'Revelation',
-// 	testament: 'NT',
-// 	genre: { id: 8, name: 'Apocalyptic' }
-// }
-
-const url = import.meta.env.bible_url;
-const request = await fetch(`${url}/v1/books/${book.id}/chapters`);
-const chapters = await request.json();
-
-const content = [];
-for await (const chapter of chapters) {
-	const request = await fetch(`${url}/v1/books/${book.id}/chapters/${chapter.id}?translation=ESV`);
-	const chapter_content = await request.json();
-	console.log(chapter_content);
-	content.push(chapter_content);
-}
-
-// {
-// 	id: 14036012,
-// 	book: [Object],
-// 	chapterId: 36,
-// 	verseId: 12,
-// 	verse: 'And he did that which was evil in the sight of the LORD his God, and humbled not himself before Jeremiah the prophet speaking from the mouth of the LORD.'
-// },
 ---
 
 <Layout title={book.name}>
-	<main>
+	<main class="wrapper">
 		<h1>{book.name}</h1>
 		{
-			content[0].map((chapter) => (
-				<p>
-					<sup>{chapter.verseId}</sup>
-					{chapter.verse}
-				</p>
+			book.chapters.map((chapter, index) => (
+				<div class='chapter' id=`chapter-${index + 1}`>
+					<h2>Chapter {index + 1}</h2>
+					{chapter.map((verse, subindex) => (
+						<p id=`chapter-${index + 1}-verse-${subindex + 1}`>
+							{ subindex != 0  &&(
+								<sup>{subindex + 1}</sup>
+							)}
+							{verse}
+						</p>
+					))}
+				</div>
 			))
 		}
 	</main>
