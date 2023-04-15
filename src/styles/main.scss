@@ -1,6 +1,6 @@
 @use "sanitize.css";
 @use "sanitize.css/typography.css";
-@use "sanitize.css/forms.css";
+@use "node-snackbar/dist/snackbar";
 
 /* @link https://utopia.fyi/type/calculator?c=320,18,1.2,1240,20,1.25,5,1,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
 :root {
@@ -78,7 +78,7 @@ a {
 	text-decoration: none;
 	&:hover {
 		box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
-			rgb(240, 171, 252) 0px -0.4em 0px 0px inset;
+			#f0abfc 0px -0.4em 0px 0px inset;
 	}
 }
 

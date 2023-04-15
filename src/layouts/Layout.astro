@@ -1,8 +1,11 @@
 ---
+import { pwaInfo } from "virtual:pwa-info";
+import "../styles/main.scss";
+
 export interface Props {
 	title: string;
 }
-import "../styles/main.scss";
+
 const { title } = Astro.props;
 ---
 
@@ -11,6 +14,13 @@ const { title } = Astro.props;
 	<head>
 		<meta charset='UTF-8' />
 		<meta name='viewport' content='width=device-width' />
+		<link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
+		<link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
+		<link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
+		<link rel='mask-icon' href='/safari-pinned-tab.svg' color='#292524' />
+		<meta name='msapplication-TileColor' content='#da532c' />
+		<meta name='theme-color' content='#fff7ed' />
+		{pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
 		<title>{title}</title>
 	</head>
 	<body>
@@ -56,6 +66,30 @@ const { title } = Astro.props;
 			</div>
 		</footer>
 		<script>
+			import { registerSW } from "virtual:pwa-register";
+			import Snackbar from "node-snackbar";
+
+			// pwa stuff
+			if ("serviceWorker" in navigator) {
+				const updateSW = registerSW({
+					onNeedRefresh() {
+						Snackbar.show({
+							text: "Update available.",
+							actionText: "Update",
+							actionTextColor: "#fff",
+							onActionClick: updateSW(true)
+						});
+					},
+					onOfflineReady() {
+						Snackbar.show({
+							actionTextColor: "#fff",
+							text: "Offline ready."
+						});
+					}
+				});
+			}
+
+			// drop shadow on the header
 			const stickyElm = document.querySelector("header");
 			const observer = new IntersectionObserver(
 				([e]) => e.target.classList.toggle("isSticky", e.intersectionRatio < 1),

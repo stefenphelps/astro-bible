@@ -2,19 +2,6 @@
 import Layout from "../layouts/Layout.astro";
 import slugify from "slugify";
 import bible from "../data/en_kjv.json";
-
-// [
-// 	{
-// 	"abbrev" : "abbrev"
-// 	"book" : "name"
-// 	"chapters":
-// 		[
-// 			["Verse 1", "Verse 2", "Verse 3", "..."],
-// 			["Verse 1", "Verse 2", "Verse 3", "..."],
-// 			["Verse 1", "Verse 2", "Verse 3", "..."]
-// 		]
-// 	}
-// ]
 ---
 
 <Layout title='Bible'>
@@ -23,7 +10,7 @@ import bible from "../data/en_kjv.json";
 			{
 				bible.map((book) => (
 					<li>
-						<a href={slugify(book.name, { lower: true })}>{book.name}</a>
+						<a rel='prefetch' href=`${slugify(book.name, { lower: true })}/`>{book.name}</a>
 						<ol class="books-chapters">
 							{book.chapters.map((chapter, index) => (
 								<li>

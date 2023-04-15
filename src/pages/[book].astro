@@ -2,20 +2,6 @@
 import Layout from "../layouts/Layout.astro";
 import slugify from "slugify";
 import bible from "../data/en_kjv.json";
-import "tocbot/dist/tocbot.css";
-
-// [
-// 	{
-// 	"abbrev" : "abbrev"
-// 	"book" : "name"
-// 	"chapters":
-// 		[
-// 			["Verse 1", "Verse 2", "Verse 3", "..."],
-// 			["Verse 1", "Verse 2", "Verse 3", "..."],
-// 			["Verse 1", "Verse 2", "Verse 3", "..."]
-// 		]
-// 	}
-// ]
 
 export async function getStaticPaths() {
 	return bible.map((post) => ({
