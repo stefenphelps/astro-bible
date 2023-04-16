@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import slugify from "slugify";
 import bible from "../data/en_kjv.json";
+import Chapter from "../components/Chapter.astro";
 
 export async function getStaticPaths() {
 	return bible.map((post) => ({
@@ -14,49 +15,20 @@ const { book } = Astro.props;
 ---
 
 <Layout title={book.name}>
-	<main class="wrapper">
+	<main class='wrapper'>
 		<h1>{book.name}</h1>
-		{
-			book.chapters.map((chapter, index) => (
-				<section class='chapter' id=`chapter-${index + 1}`>
-					<h2>Chapter {index + 1}</h2>
-					<nav>
-						<ul>
-							{chapter.map((verse, subindex) => (
-									<>
-									{subindex % 10 === 0 && (
-										<li>
-											<a href=`#chapter-${index + 1}-verse-${subindex + 1}`>
-												{subindex + 1}-{chapter.length <= subindex + 10 ? chapter.length : subindex + 10}
-											</a>
-										</li>
-									)}
-									</>
-							))}
-						</ul>
-					</nav>
-					{chapter.map((verse, subindex) => (
-						<p id=`chapter-${index + 1}-verse-${subindex + 1}`>
-							{ subindex != 0  &&(
-								<sup>{subindex + 1}</sup>
-							)}
-							{verse}
-						</p>
-					))}
-				</section>
-			))
-		}
+		{book.chapters.map((chapter, index) => <Chapter chapter={chapter} index={index} />)}
 	</main>
 </Layout>
 
 <script>
 	import Snackbar from "node-snackbar";
-	
-	const verses = document.querySelectorAll('p');
-	verses.forEach(function(verse) {
-		verse.addEventListener('click', function() {
-			const url = window.location.href.split('#')[0] + "#" + verse.id;
-			navigator.clipboard.writeText(url).then(function() {
+
+	const verses = document.querySelectorAll("p");
+	verses.forEach(function (verse) {
+		verse.addEventListener("click", function () {
+			const url = window.location.href.split("#")[0] + "#" + verse.id;
+			navigator.clipboard.writeText(url).then(function () {
 				Snackbar.show({
 					actionTextColor: "var(--accent)",
 					text: "Copied link to verse."
