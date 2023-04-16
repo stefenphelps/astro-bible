@@ -67,10 +67,11 @@ body {
 	font-size: var(--step-1);
 	transition: 350ms ease;
 }
+
 .wrapper {
 	max-width: 900px;
 	margin: auto;
-	padding: 1rem 2rem;
+	padding: 1rem 1.5rem;
 }
 
 header {
@@ -100,6 +101,7 @@ header {
 		background: none;
 		width: 2em;
 		height: 2em;
+		flex: 0 0 2em;
 		border-radius: 50%;
 		background: var(--bg);
 		border: 3px solid var(--text);
@@ -141,12 +143,25 @@ a {
 		font-size: var(--step-0);
 		margin-left: 1rem;
 		list-style: none;
-		margin: 0;
+		margin: 1rem 0 2rem;
 		padding: 0;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 1rem;
+		a {
+			background: var(--text);
+			color: var(--bg);
+			width: 1.75em;
+			height: 1.75em;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 2px;
+		}
 	}
 	a.active {
 		+ ol {
-			display: block;
+			display: flex;
 		}
 	}
 }
@@ -163,6 +178,11 @@ a {
 				position: absolute;
 				top: 0;
 				left: -1.5em;
+				@media (max-width: 767px) {
+					font-size: 12px;
+					top: 5px;
+					left: -1.7em;
+				}
 			}
 		}
 		&:first-of-type {

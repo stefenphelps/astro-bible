@@ -14,7 +14,7 @@ import bible from "../data/en_kjv.json";
 						<ol class="books-chapters">
 							{book.chapters.map((chapter, index) => (
 								<li>
-									<a href=`${slugify(book.name, { lower: true })}/#chapter-${index + 1}`>Chapter {index + 1}</a>
+									<a href=`${slugify(book.name, { lower: true })}/#chapter-${index + 1}`>{index + 1}</a>
 								</li>
 							))}
 						</ol>

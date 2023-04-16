@@ -12,9 +12,9 @@
 	},
 	"dependencies": {
 		"@astrojs/prefetch": "^0.2.1",
-		"@astrojs/sitemap": "^1.2.1",
+		"@astrojs/sitemap": "^1.2.2",
 		"@vite-pwa/astro": "^0.0.5",
-		"astro": "^2.1.9",
+		"astro": "^2.3.0",
 		"autoprefixer": "^10.4.14",
 		"node-snackbar": "^0.1.16",
 		"sanitize.css": "^13.0.0",
