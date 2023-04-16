@@ -27,7 +27,7 @@ const { book } = Astro.props;
 									{subindex % 10 === 0 && (
 										<li>
 											<a href=`#chapter-${index + 1}-verse-${subindex + 1}`>
-												{subindex + 1}-{chapter.length <= subindex + 11 ? chapter.length : subindex + 11}
+												{subindex + 1}-{chapter.length <= subindex + 10 ? chapter.length : subindex + 10}
 											</a>
 										</li>
 									)}
