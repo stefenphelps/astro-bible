@@ -18,8 +18,23 @@ const { book } = Astro.props;
 		<h1>{book.name}</h1>
 		{
 			book.chapters.map((chapter, index) => (
-				<div class='chapter' id=`chapter-${index + 1}`>
+				<section class='chapter' id=`chapter-${index + 1}`>
 					<h2>Chapter {index + 1}</h2>
+					<nav>
+						<ul>
+							{chapter.map((verse, subindex) => (
+									<>
+									{subindex % 10 === 0 && (
+										<li>
+											<a href=`#chapter-${index + 1}-verse-${subindex + 1}`>
+												{subindex + 1}-{chapter.length <= subindex + 11 ? chapter.length : subindex + 11}
+											</a>
+										</li>
+									)}
+									</>
+							))}
+						</ul>
+					</nav>
 					{chapter.map((verse, subindex) => (
 						<p id=`chapter-${index + 1}-verse-${subindex + 1}`>
 							{ subindex != 0  &&(
@@ -28,7 +43,7 @@ const { book } = Astro.props;
 							{verse}
 						</p>
 					))}
-				</div>
+				</section>
 			))
 		}
 	</main>

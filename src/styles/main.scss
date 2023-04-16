@@ -67,13 +67,45 @@ body {
 	font-size: var(--step-1);
 	transition: 350ms ease;
 }
+h1 {
+	font-size: var(--step-5);
+	margin: 0 0 1rem;
+}
+h2 {
+	font-size: var(--step-3);
+}
+p {
+	max-width: 60ch;
+}
+a {
+	color: var(--text);
+	text-decoration: none;
+	&:hover {
+		box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+			var(--accent) 0px -0.4em 0px 0px inset;
+	}
+}
 
+// utility classes
 .wrapper {
 	max-width: 900px;
 	margin: auto;
 	padding: 1rem 1.5rem;
 }
+.screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}
 
+// global components
 header {
 	backdrop-filter: blur(24px);
 	position: sticky;
@@ -108,28 +140,22 @@ header {
 		cursor: pointer;
 	}
 }
-
-h1 {
-	font-size: var(--step-5);
-	margin: 0 0 1rem;
-}
-h2 {
-	font-size: var(--step-3);
-}
-
-p {
-	max-width: 60ch;
-}
-
-a {
-	color: var(--text);
-	text-decoration: none;
-	&:hover {
-		box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
-			var(--accent) 0px -0.4em 0px 0px inset;
+footer {
+	margin-top: 4rem;
+	.wrapper {
+		display: flex;
+		justify-content: space-between;
+		p {
+			margin: 0;
+			font-size: 14px;
+		}
+		a {
+			font-weight: bold;
+		}
 	}
 }
 
+// page specific styles
 .books {
 	list-style: none;
 	margin: 0;
@@ -166,8 +192,23 @@ a {
 	}
 }
 
+//
 .chapter {
 	scroll-margin-top: 3.5em;
+	nav {
+		ul {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1rem;
+			margin: 1rem 0;
+		}
+		li {
+			font-size: 12px;
+		}
+	}
+	h2 {
+		margin: 3rem 0 0 0;
+	}
 	p {
 		position: relative;
 		scroll-margin-top: 3.5em;
@@ -195,32 +236,4 @@ a {
 			}
 		}
 	}
-}
-
-footer {
-	margin-top: 4rem;
-	.wrapper {
-		display: flex;
-		justify-content: space-between;
-		p {
-			margin: 0;
-			font-size: 14px;
-		}
-		a {
-			font-weight: bold;
-		}
-	}
-}
-
-.screen-reader-text {
-	border: 0;
-	clip: rect(1px, 1px, 1px, 1px);
-	clip-path: inset(50%);
-	height: 1px;
-	margin: -1px;
-	overflow: hidden;
-	padding: 0;
-	position: absolute;
-	width: 1px;
-	word-wrap: normal !important;
 }
