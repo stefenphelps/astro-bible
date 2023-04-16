@@ -22,15 +22,50 @@
 
 	// colors
 	--tan: #fff7ed;
-	--transparent-tan: rgba(255, 247, 237, 0.804);
+	--transparent-tan: rgba(255, 247, 237, 0.8);
 	--black: #292524;
+	--transparent-black: rgba(41, 37, 36, 0.8);
 	--pink: #f0abfc;
+	--yellow: rgba(255, 236, 0, 0.5);
+
+	// color applications
+	--text: var(--black);
+	--bg: var(--tan);
+	--bg-transparent: var(--tansparent-tan);
+	--accent: var(--pink);
+
+	@media (prefers-color-scheme: dark) {
+		--text: var(--tan);
+		--bg: var(--black);
+		--transparent-bg: var(--transparent-black);
+		--accent: var(--yellow);
+	}
+
+	accent-color: var(--accent);
+	color-scheme: dark light;
+}
+
+// user override
+html {
+	&[data-color-scheme="light"] {
+		--text: var(--black);
+		--bg: var(--tan);
+		--transparent-bg: var(--transparent-tan);
+		--accent: var(--pink);
+	}
+	&[data-color-scheme="dark"] {
+		--text: var(--tan);
+		--bg: var(--black);
+		--transparent-bg: var(--transparent-black);
+		--accent: var(--yellow);
+	}
 }
 
 body {
-	background: var(--tan);
-	color: var(--black);
+	background: var(--bg);
+	color: var(--text);
 	font-size: var(--step-1);
+	transition: 350ms ease;
 }
 .wrapper {
 	max-width: 900px;
@@ -43,7 +78,7 @@ header {
 	position: sticky;
 	z-index: 10;
 	top: -1px;
-	background: var(--transparent-tan);
+	background: var(--transparent-bg);
 	transition: 350ms ease;
 	.wrapper {
 		display: flex;
@@ -59,9 +94,16 @@ header {
 		font-size: var(--step-1);
 		margin: 0;
 	}
-	p {
-		margin: 0;
-		font-size: 14px;
+	button {
+		appearance: none;
+		border: 0 none;
+		background: none;
+		width: 2em;
+		height: 2em;
+		border-radius: 50%;
+		background: var(--bg);
+		border: 3px solid var(--text);
+		cursor: pointer;
 	}
 }
 
@@ -78,11 +120,11 @@ p {
 }
 
 a {
-	color: var(--black);
+	color: var(--text);
 	text-decoration: none;
 	&:hover {
 		box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
-			var(--pink) 0px -0.4em 0px 0px inset;
+			var(--accent) 0px -0.4em 0px 0px inset;
 	}
 }
 
@@ -136,6 +178,29 @@ a {
 }
 
 footer {
-	font-size: 14px;
 	margin-top: 4rem;
+	.wrapper {
+		display: flex;
+		justify-content: space-between;
+		p {
+			margin: 0;
+			font-size: 14px;
+		}
+		a {
+			font-weight: bold;
+		}
+	}
+}
+
+.screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
 }

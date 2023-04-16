@@ -43,7 +43,7 @@ const { book } = Astro.props;
 			const url = window.location.href.split('#')[0] + "#" + verse.id;
 			navigator.clipboard.writeText(url).then(function() {
 				Snackbar.show({
-					actionTextColor: "var(--pink)",
+					actionTextColor: "var(--accent)",
 					text: "Copied link to verse."
 				});
 			});
