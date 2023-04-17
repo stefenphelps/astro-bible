@@ -24,7 +24,7 @@ const {chapter, index} = Astro.props;
 		</ul>
 	</nav>
 	{chapter.map((verse, subindex) => (
-		<p id=`chapter-${index + 1}-verse-${subindex + 1}`>
+		<p id=`chapter-${index + 1}-verse-${subindex + 1}` tabindex="0">
 			{ subindex != 0  &&(
 				<sup>{subindex + 1}</sup>
 			)}

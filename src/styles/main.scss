@@ -222,19 +222,13 @@ footer {
 	p {
 		position: relative;
 		scroll-margin-top: 3.5em;
-		&:hover {
-			&::before {
-				content: "🔖";
-				display: block;
-				position: absolute;
-				top: 0;
-				left: -1.5em;
-				@media (max-width: 767px) {
-					font-size: 12px;
-					top: 5px;
-					left: -1.7em;
-				}
-			}
+		&:hover,
+		&:focus {
+			text-decoration-line: underline;
+			text-decoration-style: solid;
+			text-decoration-thickness: 6px;
+			text-decoration-color: var(--accent);
+			text-decoration-skip-ink: none;
 		}
 		&:first-of-type {
 			margin-top: 5rem;
