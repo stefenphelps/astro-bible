@@ -20,7 +20,30 @@ const { title } = Astro.props;
 		<link rel='mask-icon' href='/safari-pinned-tab.svg' color='#292524' />
 		<meta name='msapplication-TileColor' content='#da532c' />
 		<meta name='theme-color' content='#fff7ed' />
-		<meta property='og:image' content='/opengraph.png' />
+
+		<!-- Facebook Meta Tags -->
+		<meta property='og:url' content='https://astro-bible.netlify.app' />
+		<meta property='og:type' content='website' />
+		<meta property='og:title' content='The Bible' />
+		<meta
+			property='og:description'
+			content='An intentionally simple Bible PWA with offline support and light/dark modes.'
+		/>
+		<meta property='og:image' content='https://astro-bible.netlify.app/opengraph.png' />
+		<meta property='og:image:width' content='1200' />
+		<meta property='og:image:height' content='630' />
+
+		<!-- Twitter Meta Tags -->
+		<meta name='twitter:card' content='summary_large_image' />
+		<meta property='twitter:domain' content='astro-bible.netlify.app' />
+		<meta property='twitter:url' content='https://astro-bible.netlify.app' />
+		<meta name='twitter:title' content='The Bible' />
+		<meta
+			name='twitter:description'
+			content='An intentionally simple Bible PWA with offline support and light/dark modes.'
+		/>
+		<meta name='twitter:image' content='https://astro-bible.netlify.app/opengraph.png' />
+
 		{pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
 		<title>{title}</title>
 		<meta
