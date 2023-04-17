@@ -7,14 +7,10 @@ An intentionally simple Bible PWA with offline support.
 ```
 /
 ├── public/
-│   └── favicon.svg
 ├── src/
 │   ├── components/
-│   │   └── Card.astro
 │   ├── layouts/
-│   │   └── Layout.astro
 │   └── pages/
-│       └── index.astro
 └── package.json
 ```
 

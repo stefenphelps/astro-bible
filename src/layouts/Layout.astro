@@ -137,7 +137,8 @@ const { title } = Astro.props;
 					},
 					onOfflineReady() {
 						Snackbar.show({
-							text: "Offline ready."
+							text: "Offline ready.",
+							actionTextColor: "var(--accent)"
 						});
 					}
 				});
