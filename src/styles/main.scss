@@ -93,7 +93,9 @@ blockquote {
 a {
 	color: var(--text);
 	text-decoration: none;
-	&:hover {
+	&:hover,
+	&:focus {
+		outline: 0 none;
 		box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
 			var(--accent) 0px -0.4em 0px 0px inset;
 	}
@@ -189,7 +191,8 @@ footer {
 			align-items: center;
 			justify-content: center;
 			border-radius: 2px;
-			&:hover {
+			&:hover,
+			&:focus {
 				box-shadow: 0 0 0 transparent;
 				background: var(--text);
 				color: var(--bg);
@@ -224,6 +227,7 @@ footer {
 		scroll-margin-top: 3.5em;
 		&:hover,
 		&:focus {
+			outline: 0 none;
 			text-decoration-line: underline;
 			text-decoration-style: solid;
 			text-decoration-thickness: 6px;
