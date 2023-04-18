@@ -125,8 +125,13 @@
 		const output = document.querySelector("output");
 		postData("/api/ask.json", { question: question }).then((data) => {
 			console.log(data);
-			output.innerHTML = data.message.replace(/(\r\n|\r|\n)/g, "<br>");
-			loading.classList.remove("active");
+			if (data.message) {
+				output.innerHTML = data.message.replace(/(\r\n|\r|\n)/g, "<br>");
+				loading.classList.remove("active");
+			} else {
+				loading.classList.remove("active");
+				output.innerHTML = "Sorry, there was an error. Try again later.";
+			}
 		});
 	});
 </script>
