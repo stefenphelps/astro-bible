@@ -121,10 +121,11 @@
 		event.preventDefault();
 		const loading = document.querySelector(".loading");
 		loading.classList.add("active");
-		const question = document.querySelector("dialog input");
+		const question = document.querySelector("dialog input").value;
 		const output = document.querySelector("output");
-		postData("/api/ask.json", { question: question.value }).then((data) => {
-			output.innerHTML = data.message?.replace(/(\r\n|\r|\n)/g, "<br>");
+		postData("/api/ask.json", { question: question }).then((data) => {
+			console.log(data);
+			output.innerHTML = data.message.replace(/(\r\n|\r|\n)/g, "<br>");
 			loading.classList.remove("active");
 		});
 	});

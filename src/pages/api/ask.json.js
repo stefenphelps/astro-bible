@@ -4,7 +4,7 @@ export async function post({ request }) {
 	const data = {
 		model: "gpt-3.5-turbo",
 		messages: [{ role: "user", content: `${body.question} - respond only using Bible verses.` }],
-		temperatue: 0.7,
+		temperature: 0.7,
 		max_tokens: 700
 	};
 
@@ -18,7 +18,9 @@ export async function post({ request }) {
 	});
 
 	const response = await chatGpt.json();
-	const text = response.choices[0]?.message?.content;
+
+	console.log(response);
+	const text = response.choices[0].message.content;
 
 	return new Response(
 		JSON.stringify({
