@@ -53,9 +53,7 @@
 			></path>
 		</svg>
 	</div>
-	<output>
-		<!-- javascript will put chat gpt's response here -->
-	</output>
+	<output></output>
 </dialog>
 <script>
 	// drop shadow on the header
@@ -216,6 +214,9 @@
 			display: block;
 			font-style: italic;
 			font-size: var(--step-0);
+			&:empty {
+				display: none;
+			}
 		}
 		.loading {
 			position: absolute;
