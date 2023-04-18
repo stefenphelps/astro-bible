@@ -32,3 +32,45 @@ const {chapter, index} = Astro.props;
 		</p>
 	))}
 </section>
+
+<style lang="scss">
+	.chapter {
+		scroll-margin-top: 3.5em;
+		nav {
+			ul {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 1rem;
+				margin: 1rem 0;
+			}
+			li {
+				font-size: 12px;
+			}
+		}
+		h2 {
+			margin: 3rem 0 0 0;
+		}
+		p {
+			position: relative;
+			scroll-margin-top: 3.5em;
+			&:hover,
+			&:focus {
+				outline: 0 none;
+				text-decoration-line: underline;
+				text-decoration-style: solid;
+				text-decoration-thickness: 6px;
+				text-decoration-color: var(--accent);
+				text-decoration-skip-ink: none;
+			}
+			&:first-of-type {
+				margin-top: 5rem;
+				&::first-letter {
+					font-size: var(--step-5);
+					line-height: 0;
+					font-weight: 200;
+					margin-right: 5px;
+				}
+			}
+		}
+	}
+</style>
