@@ -1,0 +1,19 @@
+[build]
+	command = "npm run build"
+	publish = "dist"
+
+[[plugins]]
+	package = "netlify-plugin-cache"
+		[plugins.inputs]
+			paths = ["./dist"]
+	
+[[headers]]
+	for = "/manifest.webmanifest"
+		[headers.values]
+			Content-Type = "application/manifest+json"
+	
+[[headers]]
+	for = "/assets/*"
+		[headers.values]
+			cache-control = "max-age=31536000, immutable"
+
