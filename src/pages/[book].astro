@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import Layout from "../layouts/Layout.astro";
 import slugify from "slugify";
 import bible from "../data/en_kjv.json";
@@ -20,20 +22,3 @@ const { book } = Astro.props;
 		{book.chapters.map((chapter, index) => <Chapter chapter={chapter} index={index} />)}
 	</main>
 </Layout>
-
-<script>
-	import Snackbar from "node-snackbar";
-
-	const verses = document.querySelectorAll("p");
-	verses.forEach(function (verse) {
-		verse.addEventListener("click", function () {
-			const url = window.location.href.split("#")[0] + "#" + verse.id;
-			navigator.clipboard.writeText(url).then(function () {
-				Snackbar.show({
-					actionTextColor: "var(--accent)",
-					text: "Copied link to verse."
-				});
-			});
-		});
-	});
-</script>

@@ -33,6 +33,23 @@ const {chapter, index} = Astro.props;
 	))}
 </section>
 
+<script>
+	import Snackbar from "node-snackbar";
+
+	const verses = document.querySelectorAll(".chapter p");
+	verses.forEach(function (verse) {
+		verse.addEventListener("click", function () {
+			const url = window.location.href.split("#")[0] + "#" + verse.id;
+			navigator.clipboard.writeText(url).then(function () {
+				Snackbar.show({
+					actionTextColor: "var(--accent)",
+					text: "Copied link to verse."
+				});
+			});
+		});
+	});
+</script>
+
 <style lang="scss">
 	.chapter {
 		scroll-margin-top: 3.5em;

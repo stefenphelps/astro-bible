@@ -4,9 +4,20 @@
 <header>
 	<div class='wrapper'>
 		<h1><a href='/'>The Bible</a></h1>
-		<button>
+		<button class='question'>
+			<span class='screen-reader-text'>Have a question?</span>
+			<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512' width='14' height='16'>
+				<title>Have a question?</title>
+				<path
+					fill='var(--text)'
+					d='M204.3 32.01H96c-52.94 0-96 43.06-96 96c0 17.67 14.31 31.1 32 31.1s32-14.32 32-31.1c0-17.64 14.34-32 32-32h108.3C232.8 96.01 256 119.2 256 147.8c0 19.72-10.97 37.47-30.5 47.33L127.8 252.4C117.1 258.2 112 268.7 112 280v40c0 17.67 14.31 31.99 32 31.99s32-14.32 32-31.99V298.3L256 251.3c39.47-19.75 64-59.42 64-103.5C320 83.95 268.1 32.01 204.3 32.01zM144 400c-22.09 0-40 17.91-40 40s17.91 39.1 40 39.1s40-17.9 40-39.1S166.1 400 144 400z'
+				></path>
+			</svg>
+		</button>
+		<button class='color-mode-toggle'>
 			<span class='screen-reader-text'>Toggle Dark Mode</span>
 			<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512' width='20' height='16'>
+				<title>Toggle Dark Mode</title>
 				<path
 					fill='var(--text)'
 					d='M640 256c0 97.24-78.75 175.1-175.1 175.1s-175.1-78.72-175.1-175.1s78.75-175.1 175.1-175.1S640 158.8 640 256z'
@@ -20,6 +31,32 @@
 		</button>
 	</div>
 </header>
+<dialog>
+	<button class='close-button'>
+		<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 512 512'>
+			<title>Close</title>
+			<path
+				d='M175 175C184.4 165.7 199.6 165.7 208.1 175L255.1 222.1L303 175C312.4 165.7 327.6 165.7 336.1 175C346.3 184.4 346.3 199.6 336.1 208.1L289.9 255.1L336.1 303C346.3 312.4 346.3 327.6 336.1 336.1C327.6 346.3 312.4 346.3 303 336.1L255.1 289.9L208.1 336.1C199.6 346.3 184.4 346.3 175 336.1C165.7 327.6 165.7 312.4 175 303L222.1 255.1L175 208.1C165.7 199.6 165.7 184.4 175 175V175zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z'
+			></path>
+		</svg>
+	</button>
+	<h2>Have a question about the Bible?</h2>
+	<p>Ask anything below and 🤖 will try it's best to let you know what the Bible says about it.</p>
+	<form>
+		<input type='search' placeholder='Your question...' required />
+		<button type='submit'>Submit</button>
+	</form>
+	<div class='loading'>
+		<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='32' height='32'>
+			<path
+				d='M304 48C304 74.51 282.5 96 256 96C229.5 96 208 74.51 208 48C208 21.49 229.5 0 256 0C282.5 0 304 21.49 304 48zM304 464C304 490.5 282.5 512 256 512C229.5 512 208 490.5 208 464C208 437.5 229.5 416 256 416C282.5 416 304 437.5 304 464zM0 256C0 229.5 21.49 208 48 208C74.51 208 96 229.5 96 256C96 282.5 74.51 304 48 304C21.49 304 0 282.5 0 256zM512 256C512 282.5 490.5 304 464 304C437.5 304 416 282.5 416 256C416 229.5 437.5 208 464 208C490.5 208 512 229.5 512 256zM74.98 437C56.23 418.3 56.23 387.9 74.98 369.1C93.73 350.4 124.1 350.4 142.9 369.1C161.6 387.9 161.6 418.3 142.9 437C124.1 455.8 93.73 455.8 74.98 437V437zM142.9 142.9C124.1 161.6 93.73 161.6 74.98 142.9C56.24 124.1 56.24 93.73 74.98 74.98C93.73 56.23 124.1 56.23 142.9 74.98C161.6 93.73 161.6 124.1 142.9 142.9zM369.1 369.1C387.9 350.4 418.3 350.4 437 369.1C455.8 387.9 455.8 418.3 437 437C418.3 455.8 387.9 455.8 369.1 437C350.4 418.3 350.4 387.9 369.1 369.1V369.1z'
+			></path>
+		</svg>
+	</div>
+	<output>
+		<!-- javascript will put chat gpt's response here -->
+	</output>
+</dialog>
 <script>
 	// drop shadow on the header
 	const stickyElm = document.querySelector("header");
@@ -29,9 +66,9 @@
 	);
 	observer.observe(stickyElm);
 
-	// dark mode stuffs
+	// dark mode toggle
 	const html = document.documentElement;
-	const toggleButton = document.querySelector("header button");
+	const toggleButton = document.querySelector(".color-mode-toggle");
 	const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
 
 	const setColorScheme = (value) => {
@@ -51,7 +88,48 @@
 		const scheme = html.dataset.colorScheme === "dark" ? "light" : "dark";
 		setColorScheme(scheme);
 	});
+
+	// questions popup
+	const questionButton = document.querySelector(".question");
+	const dialog = document.querySelector("dialog");
+	const closeButton = document.querySelector(".close-button");
+
+	questionButton.addEventListener("click", function () {
+		dialog.showModal();
+	});
+	closeButton.addEventListener("click", function () {
+		dialog.close();
+	});
+
+	// question form submission
+	const form = document.querySelector("dialog form");
+
+	// Example POST method implementation:
+	async function postData(url = "", data = {}) {
+		// Default options are marked with *
+		const response = await fetch(url, {
+			method: "POST", // *GET, POST, PUT, DELETE, etc.
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(data)
+		});
+		return response.json();
+	}
+
+	form.addEventListener("submit", function (event) {
+		event.preventDefault();
+		const loading = document.querySelector(".loading");
+		loading.classList.add("active");
+		const question = document.querySelector("dialog input").value;
+		const output = document.querySelector("output");
+		postData("/api/ask.json", { question: question }).then((data) => {
+			output.innerHTML = data.message.replace(/(\r\n|\r|\n)/g, "<br>");
+			loading.classList.remove("active");
+		});
+	});
 </script>
+
 <style lang='scss'>
 	header {
 		backdrop-filter: blur(24px);
@@ -63,8 +141,7 @@
 		.wrapper {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
-			gap: 2rem;
+			gap: 1rem;
 		}
 		&.isSticky {
 			box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
@@ -79,6 +156,83 @@
 			border: 0 none;
 			background: none;
 			cursor: pointer;
+			padding: 0;
+		}
+		.question {
+			margin-left: auto;
+		}
+	}
+	dialog {
+		background: var(--text);
+		color: var(--bg);
+		border: 0 none;
+		max-width: 700px;
+		.close-button {
+			appearance: none;
+			border: 0 none;
+			background: none;
+			cursor: pointer;
+			padding: 0;
+			margin: -0.5rem -0.5rem 0 0;
+			float: right;
+		}
+		&::backdrop {
+			background: rgba(0, 0, 0, 0.5);
+			backdrop-filter: blur(5px);
+		}
+		h2 {
+			margin-top: 0;
+		}
+		form {
+			display: flex;
+			gap: 0.5rem;
+			input {
+				flex: 1 1 100%;
+			}
+			button {
+				cursor: pointer;
+			}
+			input,
+			button {
+				border: 2px solid var(--bg);
+				padding: 0.5rem 1rem;
+			}
+		}
+		output {
+			margin-top: 2rem;
+			display: block;
+			font-style: italic;
+			font-size: var(--step-0);
+		}
+		.loading {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			backdrop-filter: blur(3px);
+			opacity: 0;
+			visibility: hidden;
+			transition: 200ms ease;
+			&.active {
+				opacity: 1;
+				visibility: visible;
+				svg {
+					animation: rotate 2s linear infinite;
+					display: block;
+				}
+			}
+		}
+	}
+	@keyframes rotate {
+		from {
+			transform: rotate(0);
+		}
+		to {
+			transform: rotate(360deg);
 		}
 	}
 </style>
