@@ -121,10 +121,10 @@
 		event.preventDefault();
 		const loading = document.querySelector(".loading");
 		loading.classList.add("active");
-		const question = document.querySelector("dialog input").value;
+		const question = document.querySelector("dialog input");
 		const output = document.querySelector("output");
-		postData("/api/ask.json", { question: question }).then((data) => {
-			output.innerHTML = data.message.replace(/(\r\n|\r|\n)/g, "<br>");
+		postData("/api/ask.json", { question: question.value }).then((data) => {
+			output.innerHTML = data.message?.replace(/(\r\n|\r|\n)/g, "<br>");
 			loading.classList.remove("active");
 		});
 	});
@@ -185,9 +185,10 @@
 		}
 		form {
 			display: flex;
+			flex-wrap: wrap;
 			gap: 0.5rem;
 			input {
-				flex: 1 1 100%;
+				flex: 1 1 200px;
 			}
 			button {
 				cursor: pointer;
