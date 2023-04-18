@@ -3,7 +3,9 @@ export async function post({ request }) {
 
 	const data = {
 		model: "gpt-3.5-turbo",
-		messages: [{ role: "user", content: `${body.question} - respond only using Bible verses.` }]
+		messages: [{ role: "user", content: `${body.question} - respond only using Bible verses.` }],
+		temperatue: 0.7,
+		max_tokens: 700
 	};
 
 	const chatGpt = await fetch("https://api.openai.com/v1/chat/completions", {
