@@ -3,8 +3,6 @@ import AstroPWA from "@vite-pwa/astro";
 import sitemap from "@astrojs/sitemap";
 import prefetch from "@astrojs/prefetch";
 import netlify from "@astrojs/netlify/functions";
-import critters from "astro-critters";
-
 import compress from "astro-compress";
 
 // https://astro.build/config
