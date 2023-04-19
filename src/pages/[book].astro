@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 const { book } = Astro.props;
 ---
 
-<Layout title={book.name}>
+<Layout title=`${book.name} | The Simple Bible`>
 	<main class='wrapper'>
 		<h1>{book.name}</h1>
 		{book.chapters.map((chapter, index) => <Chapter chapter={chapter} index={index} />)}
