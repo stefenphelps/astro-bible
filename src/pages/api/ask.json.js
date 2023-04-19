@@ -25,9 +25,12 @@ export async function post({ request }) {
 	});
 
 	const response = await chatGpt.json();
-
-	console.log(response);
 	const text = response.choices[0].message.content;
+
+	// log question
+	console.log(body.question);
+	// log answer
+	console.log(text);
 
 	return new Response(
 		JSON.stringify({
