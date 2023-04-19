@@ -3,7 +3,14 @@ export async function post({ request }) {
 
 	const data = {
 		model: "gpt-3.5-turbo",
-		messages: [{ role: "user", content: `${body.question} - respond only using Bible verses.` }],
+		messages: [
+			{
+				role: "system",
+				content:
+					"You are a pastor for a protestant church. All your responses should try to include Bible references."
+			},
+			{ role: "user", content: `${body.question}` }
+		],
 		temperature: 0.7,
 		max_tokens: 700
 	};
