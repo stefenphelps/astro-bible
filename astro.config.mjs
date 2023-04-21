@@ -16,6 +16,8 @@ export default defineConfig({
 		prefetch(),
 		AstroPWA({
 			manifest: {
+				base: "/",
+				scope: "/",
 				name: "The Bible",
 				short_name: "Bible",
 				description: "KJV translation of the Bible powered by Astro.",
@@ -42,6 +44,14 @@ export default defineConfig({
 						purpose: "any maskable"
 					}
 				]
+			},
+			workbox: {
+				navigateFallback: "/404",
+				globPatterns: ["**/*.{css,js,html,svg,png,ico,txt}"]
+			},
+			devOptions: {
+				enabled: true,
+				navigateFallbackAllowlist: [/^\/404$/]
 			}
 		})
 	],
