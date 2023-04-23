@@ -1,10 +1,11 @@
 ---
 interface Props {
+	book: string;
 	chapter: [];
 	index: number;
 }
 
-const {chapter, index} = Astro.props;
+const {book, chapter, index} = Astro.props;
 ---
 <section class='chapter' id=`chapter-${index + 1}`>
 	<h2>Chapter {index + 1}</h2>
@@ -24,11 +25,11 @@ const {chapter, index} = Astro.props;
 		</ul>
 	</nav>
 	{chapter.map((verse, subindex) => (
-		<p id=`chapter-${index + 1}-verse-${subindex + 1}` tabindex="0">
+		<p id=`chapter-${index + 1}-verse-${subindex + 1}` tabindex="0" data-book={book} data-chapter={index + 1} data-verse={subindex + 1}>
 			{ subindex != 0  &&(
 				<sup>{subindex + 1}</sup>
 			)}
-			{verse}
+			<span>{verse}</span>
 		</p>
 	))}
 </section>
@@ -37,15 +38,24 @@ const {chapter, index} = Astro.props;
 	import Snackbar from "node-snackbar";
 
 	const verses = document.querySelectorAll(".chapter p");
+	
 	verses.forEach(function (verse) {
-		verse.addEventListener("click", function () {
-			const url = window.location.href.split("#")[0] + "#" + verse.id;
-			navigator.clipboard.writeText(url).then(function () {
+		verse.addEventListener("click", async function () {
+			const shareData = {
+				title: `${verse.dataset.book} ${verse.dataset.chapter}:${verse.dataset.verse}`,
+				text: verse.childNodes[1].textContent,
+				url: window.location.href.split("#")[0] + "#" + verse.id
+			};
+			console.log(shareData);
+			try {
+				await navigator.share(shareData);
 				Snackbar.show({
 					actionTextColor: "var(--accent)",
-					text: "Copied link to verse."
+					text: "Verse shared successfully."
 				});
-			});
+			} catch (error) {
+				console.log(error)
+			}
 		});
 	});
 </script>

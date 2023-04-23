@@ -20,6 +20,6 @@ const title = `${book.name} | The Simple Bible`;
 <Layout title={title}>
 	<main class='wrapper'>
 		<h1>{book.name}</h1>
-		{book.chapters.map((chapter, index) => <Chapter chapter={chapter} index={index} />)}
+		{book.chapters.map((chapter, index) => <Chapter book={book.name} chapter={chapter} index={index} />)}
 	</main>
 </Layout>
