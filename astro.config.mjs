@@ -18,9 +18,10 @@ export default defineConfig({
 			manifest: {
 				base: "/",
 				scope: "/",
-				name: "The Bible",
+				orientation: "portrait-primary",
+				name: "The Simple Bible",
 				short_name: "Bible",
-				description: "KJV translation of the Bible powered by Astro.",
+				description: "A well designed simple Bible app powered by Astro.",
 				start_url: "https://astro-bible.netlify.app",
 				theme_color: "#fff7ed",
 				background_color: "#fff7ed",
@@ -33,25 +34,22 @@ export default defineConfig({
 						type: "image/png"
 					},
 					{
-						src: "/pwa-512x512.png",
+						src: "/safari-pinned-tab.svg",
 						sizes: "512x512",
-						type: "image/png"
+						type: "image/png",
+						purpose: "maskable"
 					},
 					{
 						src: "/pwa-512x512.png",
 						sizes: "512x512",
 						type: "image/png",
-						purpose: "any maskable"
+						purpose: "any"
 					}
 				]
 			},
 			workbox: {
 				navigateFallback: "/404",
 				globPatterns: ["**/*.{css,js,html,svg,png,ico,txt}"]
-			},
-			devOptions: {
-				enabled: true,
-				navigateFallbackAllowlist: [/^\/404$/]
 			}
 		})
 	],
