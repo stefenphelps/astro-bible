@@ -46,7 +46,6 @@ const {book, chapter, index} = Astro.props;
 				text: verse.querySelector('span').textContent,
 				url: window.location.href.split("#")[0] + "#" + verse.id
 			};
-			console.log(shareData);
 			try {
 				await navigator.share(shareData);
 				Snackbar.show({

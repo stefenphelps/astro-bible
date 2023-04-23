@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "app.netlify.astro_bible.twa",
+                     "sha256_cert_fingerprints": ["26:00:C9:93:E2:84:71:6F:91:D5:35:0C:8F:CA:57:5D:69:85:95:04:A4:32:F0:E5:41:5C:25:B1:3D:5F:C2:4B"] }
+      }
+]
