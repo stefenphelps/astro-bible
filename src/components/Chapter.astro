@@ -43,7 +43,7 @@ const {book, chapter, index} = Astro.props;
 		verse.addEventListener("click", async function () {
 			const shareData = {
 				title: `${verse.dataset.book} ${verse.dataset.chapter}:${verse.dataset.verse}`,
-				text: verse.childNodes[1].textContent,
+				text: verse.querySelector('span').textContent,
 				url: window.location.href.split("#")[0] + "#" + verse.id
 			};
 			console.log(shareData);
