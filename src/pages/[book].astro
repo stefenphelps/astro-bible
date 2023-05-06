@@ -14,10 +14,20 @@ export async function getStaticPaths() {
 }
 
 const { book } = Astro.props;
-const title = `${book.name} | The Simple Bible`;
+let title = `${book.name} | The Simple Bible`;
+let description = "";
+
+const currentBook = Astro.url.searchParams.get("book");
+const currentChapter = Astro.url.searchParams.get("chapter");
+const currentVerse = Astro.url.searchParams.get("verse");
+const currentText = Astro.url.searchParams.get("text");
+if (currentBook && currentChapter && currentVerse && currentText) {
+	description = `${currentBook} ${currentChapter}:${currentVerse} ${currentText}`;
+	title = `${currentBook} ${currentChapter}:${currentVerse} | The Simple Bible`;
+}
 ---
 
-<Layout title={title}>
+<Layout title={title} description={description}>
 	<main class='wrapper'>
 		<h1>{book.name}</h1>
 		{book.chapters.map((chapter, index) => <Chapter book={book.name} chapter={chapter} index={index} />)}
