@@ -17,6 +17,7 @@ const { book } = Astro.props;
 let title = `${book.name} | The Simple Bible`;
 let description = "";
 
+// these will only work if SSR is enabled.... worth the perf hit???
 const currentBook = Astro.url.searchParams.get("book");
 const currentChapter = Astro.url.searchParams.get("chapter");
 const currentVerse = Astro.url.searchParams.get("verse");
