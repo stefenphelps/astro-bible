@@ -44,7 +44,7 @@ const {book, chapter, index} = Astro.props;
 			const shareData = {
 				title: `${verse.dataset.book} ${verse.dataset.chapter}:${verse.dataset.verse}`,
 				text: verse.querySelector('span').textContent,
-				url: `https://astro-bible.netlify.app/share/index.html?book=${encodeURIComponent(verse.dataset.book)}&chapter=${verse.dataset.chapter}&verse=${verse.dataset.verse}&text=${encodeURIComponent(verse.textContent)}#${verse.id}`,
+				url: `https://astro-bible.netlify.app/share/?book=${encodeURIComponent(verse.dataset.book)}&chapter=${verse.dataset.chapter}&verse=${verse.dataset.verse}&text=${encodeURIComponent(verse.textContent)}#${verse.id}`,
 			};
 			if (!navigator.canShare) {
 				navigator.clipboard.writeText(shareData.url).then(function () {
