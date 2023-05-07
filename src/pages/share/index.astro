@@ -1,0 +1,27 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import bible from "../../data/en_kjv.json";
+
+const currentBook = Astro.url.searchParams.get("book");
+const currentChapter = Astro.url.searchParams.get("chapter");
+const currentVerse = Astro.url.searchParams.get("verse");
+const currentText = Astro.url.searchParams.get("text");
+
+const book = bible.find((page) => page.name === currentBook) || "";
+const title = `${currentBook} ${currentChapter}:${currentVerse}` || "";
+const description = `${currentBook} ${currentChapter}:${currentText.replace(/\s+/g, " ").trim()}` || "";
+---
+
+<Layout title={title} description={description}>
+	<main class='wrapper'>
+		<h1>Loading Verse...</h1>
+	</main>
+</Layout>
+
+<script>
+	import slugify from "slugify";
+	const url = new URL(window.location);
+	const bookName = url.searchParams.get("book");
+	const book = slugify(bookName, { lower: true });
+	window.location.href = `https://astro-bible.netlify.app/${book}${url.hash}`;
+</script>

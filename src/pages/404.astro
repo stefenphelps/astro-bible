@@ -1,6 +1,7 @@
 ---
+export const prerender = true;
+
 import Layout from "../layouts/Layout.astro";
-import slugify from "slugify";
 import bible from "../data/en_kjv.json";
 
 const randomBook = bible[Math.floor(Math.random() * bible.length)];
@@ -8,7 +9,7 @@ const randomChapter = randomBook.chapters[Math.floor(Math.random() * randomBook.
 const randomVerse = randomChapter[Math.floor(Math.random() * randomChapter.length)];
 ---
 
-<Layout title='Bible'>
+<Layout title='Error 404 | The Simple Bible'>
 	<main class='wrapper'>
 		<h1>Error 404</h1>
 		<p>Sorry, you seem to have lost your way. Here's a random verse for you instead:</p>

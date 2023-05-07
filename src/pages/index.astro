@@ -12,7 +12,7 @@ import bible from "../data/en_kjv.json";
 			{
 				bible.map((book) => (
 					<li>
-						<a rel='prefetch' href=`${slugify(book.name, { lower: true })}/`>{book.name}</a>
+						<a rel='prefetch' href=`/${slugify(book.name, { lower: true })}/`>{book.name}</a>
 						<ol class="books-chapters">
 							{book.chapters.map((chapter, index) => (
 								<li>

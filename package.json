@@ -2,7 +2,7 @@
 	"name": "Astro Bible",
 	"author": "Stefen Phelps",
 	"type": "module",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"scripts": {
 		"dev": "astro dev",
 		"start": "astro dev",

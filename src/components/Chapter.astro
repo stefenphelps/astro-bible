@@ -44,7 +44,7 @@ const {book, chapter, index} = Astro.props;
 			const shareData = {
 				title: `${verse.dataset.book} ${verse.dataset.chapter}:${verse.dataset.verse}`,
 				text: verse.querySelector('span').textContent,
-				url: `${window.location.href.split("#")[0]}?book=${verse.dataset.book}&chapter=${verse.dataset.chapter}&verse=${verse.dataset.verse}&text=${encodeURIComponent(verse.textContent)}#${verse.id}`,
+				url: `http://localhost:3000/share/index.html?book=${verse.dataset.book}&chapter=${verse.dataset.chapter}&verse=${verse.dataset.verse}&text=${encodeURIComponent(verse.textContent)}#${verse.id}`,
 			};
 			if (!navigator.canShare) {
 				navigator.clipboard.writeText(shareData.url).then(function () {
