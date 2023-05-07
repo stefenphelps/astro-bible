@@ -9,7 +9,7 @@ const currentVerse = Astro.url.searchParams.get("verse");
 const book = bible.find((page) => page.name === currentBook) || "";
 const currentText = book.chapters[currentChapter - 1][currentVerse - 1];
 const title = `${currentBook} ${currentChapter}:${currentVerse}` || "";
-const description = `${currentBook} ${currentChapter}:${currentText.replace(/\s+/g, " ").trim()}` || "";
+const description = `${currentText.replace(/\s+/g, " ").trim()}` || "";
 ---
 
 <Layout title={title} description={description}>
