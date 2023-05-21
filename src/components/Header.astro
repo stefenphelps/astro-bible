@@ -3,7 +3,11 @@
 
 <header>
 	<div class='wrapper'>
-		<h1><a href='/'>The Bible</a></h1>
+		<h1><a href='/' class='logo'>The Bible</a></h1>
+		<select class='translation'>
+			<option selected value='kjv'>KJV</option>
+			<option value='bbe'>BBE</option>
+		</select>
 		<button class='question'>
 			<span class='screen-reader-text'>Have a question?</span>
 			<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512' width='14' height='16'>
@@ -65,6 +69,18 @@
 		{ threshold: [1] }
 	);
 	observer.observe(stickyElm);
+
+	// translation select input
+	const translationInput = document.querySelector("select.translation");
+	if (localStorage.getItem("simple-bible-translation")) {
+		translationInput.value = localStorage.getItem("simple-bible-translation");
+		document.querySelector(".logo").href = `/${localStorage.getItem("simple-bible-translation")}/`;
+	}
+	translationInput.addEventListener("change", function (event) {
+		const translation = event.target.value;
+		localStorage.setItem("simple-bible-translation", translation);
+		window.location.href = `/${translation}/`;
+	});
 
 	// dark mode toggle
 	const html = document.documentElement;
@@ -156,6 +172,12 @@
 		h1 {
 			font-size: var(--step-1);
 			margin: 0;
+		}
+		select {
+			border: 0 none;
+			appearance: none;
+			font-size: 14px;
+			padding-right: 1.5rem;
 		}
 		button {
 			appearance: none;

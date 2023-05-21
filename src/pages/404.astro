@@ -2,7 +2,7 @@
 export const prerender = true;
 
 import Layout from "../layouts/Layout.astro";
-import bible from "../data/en_kjv.json";
+import bible from "../content/en_kjv.json";
 
 const randomBook = bible[Math.floor(Math.random() * bible.length)];
 const randomChapter = randomBook.chapters[Math.floor(Math.random() * randomBook.chapters.length)];
