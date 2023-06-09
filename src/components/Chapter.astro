@@ -27,7 +27,7 @@ const {book, chapter, index} = Astro.props;
 	{chapter.map((verse, subindex) => (
 		<p id=`chapter-${index + 1}-verse-${subindex + 1}` tabindex="0" data-book={book} data-chapter={index + 1} data-verse={subindex + 1}>
 			{ subindex != 0  &&(
-				<sup>{subindex + 1}</sup>
+				<sup>{subindex + 1}&nbsp;</sup>
 			)}
 			<span>{verse}</span>
 		</p>
