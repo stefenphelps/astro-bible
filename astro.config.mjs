@@ -6,7 +6,7 @@ import netlify from "@astrojs/netlify/functions";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://astro-bible.netlify.app",
+  site: "https://bible.stefenphelps.com",
   trailingSlash: "always",
   output: "server",
   compressHTML: true,
