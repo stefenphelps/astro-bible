@@ -175,7 +175,7 @@
     loading.classList.add("active");
     const question = document.querySelector("dialog input").value;
     const output = document.querySelector("output");
-    postData("/api/ask.json", { question: question }).then((data) => {
+    postData("/api/ask.json/", { question: question }).then((data) => {
       console.log(data);
       if (data.message) {
         output.innerHTML = data.message.replace(/(\r\n|\r|\n)/g, "<br>");
