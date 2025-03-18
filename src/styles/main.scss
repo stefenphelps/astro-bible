@@ -8,19 +8,3 @@
 @use "_variables";
 @use "_typography";
 @use "_utilities";
-
-// light/dark mode user overrides
-html {
-	&[data-color-scheme="light"] {
-		--text: var(--black);
-		--bg: var(--tan);
-		--transparent-bg: var(--transparent-tan);
-		--accent: var(--pink);
-	}
-	&[data-color-scheme="dark"] {
-		--text: var(--tan);
-		--bg: var(--black);
-		--transparent-bg: var(--transparent-black);
-		--accent: var(--yellow);
-	}
-}

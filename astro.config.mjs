@@ -1,7 +1,6 @@
 import { defineConfig } from "astro/config";
 import AstroPWA from "@vite-pwa/astro";
 import sitemap from "@astrojs/sitemap";
-import prefetch from "@astrojs/prefetch";
 import netlify from "@astrojs/netlify";
 
 // https://astro.build/config
@@ -10,9 +9,9 @@ export default defineConfig({
   trailingSlash: "always",
   output: "server",
   compressHTML: true,
+  prefetch: true,
   integrations: [
     sitemap(),
-    prefetch(),
     AstroPWA({
       manifest: {
         base: "/",
@@ -76,10 +75,6 @@ export default defineConfig({
             purpose: "any",
           },
         ],
-      },
-      workbox: {
-        navigateFallback: "/404",
-        globPatterns: ["**/*.{css,js,html,svg,png,ico,txt}"],
       },
     }),
   ],

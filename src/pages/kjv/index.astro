@@ -12,7 +12,7 @@ import Layout from "../../layouts/Layout.astro";
 			{
 				bible.map((book) => (
 					<li>
-						<a rel='prefetch' href=`/kjv/${slugify(book.name, { lower: true })}/`>{book.name}</a>
+						<a data-astro-prefetch="viewport" href=`/kjv/${slugify(book.name, { lower: true })}/`>{book.name}</a>
 						<ol class="books-chapters">
 							{book.chapters.map((chapter, index) => (
 								<li>

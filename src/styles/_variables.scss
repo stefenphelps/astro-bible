@@ -1,42 +1,42 @@
 /* @link https://utopia.fyi/type/calculator?c=320,18,1.2,1240,20,1.25,5,1,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
 :root {
-	// font sizes
-	/* Step -1: 15.00px → 16.00px */
-	--step--1: clamp(0.94rem, calc(0.92rem + 0.11vw), 1rem);
-	/* Step 0: 18.00px → 20.00px */
-	--step-0: clamp(1.13rem, calc(1.08rem + 0.22vw), 1.25rem);
-	/* Step 1: 21.60px → 25.00px */
-	--step-1: clamp(1.35rem, calc(1.28rem + 0.37vw), 1.56rem);
-	/* Step 2: 25.92px → 31.25px */
-	--step-2: clamp(1.62rem, calc(1.5rem + 0.58vw), 1.95rem);
-	/* Step 3: 31.10px → 39.06px */
-	--step-3: clamp(1.94rem, calc(1.77rem + 0.87vw), 2.44rem);
-	/* Step 4: 37.32px → 48.83px */
-	--step-4: clamp(2.33rem, calc(2.08rem + 1.25vw), 3.05rem);
-	/* Step 5: 44.79px → 61.04px */
-	--step-5: clamp(2.8rem, calc(2.45rem + 1.77vw), 3.82rem);
+  // font sizes
+  /* Step -1: 15.00px → 16.00px */
+  --step--1: clamp(0.94rem, calc(0.92rem + 0.11vw), 1rem);
+  /* Step 0: 18.00px → 20.00px */
+  --step-0: clamp(1.13rem, calc(1.08rem + 0.22vw), 1.25rem);
+  /* Step 1: 21.60px → 25.00px */
+  --step-1: clamp(1.35rem, calc(1.28rem + 0.37vw), 1.56rem);
+  /* Step 2: 25.92px → 31.25px */
+  --step-2: clamp(1.62rem, calc(1.5rem + 0.58vw), 1.95rem);
+  /* Step 3: 31.10px → 39.06px */
+  --step-3: clamp(1.94rem, calc(1.77rem + 0.87vw), 2.44rem);
+  /* Step 4: 37.32px → 48.83px */
+  --step-4: clamp(2.33rem, calc(2.08rem + 1.25vw), 3.05rem);
+  /* Step 5: 44.79px → 61.04px */
+  --step-5: clamp(2.8rem, calc(2.45rem + 1.77vw), 3.82rem);
 
-	// colors
-	--tan: #fff7ed;
-	--transparent-tan: rgba(255, 247, 237, 0.8);
-	--black: #292524;
-	--transparent-black: rgba(41, 37, 36, 0.8);
-	--pink: #f0abfc;
-	--yellow: rgba(255, 236, 0, 0.5);
+  // colors
+  --tan: #fff7ed;
+  --transparent-tan: rgba(255, 247, 237, 0.8);
+  --black: #292524;
+  --transparent-black: rgba(41, 37, 36, 0.8);
+  --pink: #f0abfc;
+  --yellow: rgba(255, 236, 0, 0.5);
 
-	// color applications
-	--text: var(--black);
-	--bg: var(--tan);
-	--bg-transparent: var(--tansparent-tan);
-	--accent: var(--pink);
+  // color applications
+  --text: var(--black);
+  --bg: var(--tan);
+  --bg-transparent: var(--tansparent-tan);
+  --accent: var(--pink);
 
-	@media (prefers-color-scheme: dark) {
-		--text: var(--tan);
-		--bg: var(--black);
-		--transparent-bg: var(--transparent-black);
-		--accent: var(--yellow);
-	}
+  accent-color: var(--accent);
+  color-scheme: dark light;
 
-	accent-color: var(--accent);
-	color-scheme: dark light;
+  @media (prefers-color-scheme: dark) {
+    --text: var(--tan);
+    --bg: var(--black);
+    --transparent-bg: var(--transparent-black);
+    --accent: var(--yellow);
+  }
 }

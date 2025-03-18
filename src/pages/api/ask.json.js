@@ -3,7 +3,7 @@ export async function POST({ request }) {
     const body = await request.json();
 
     const data = {
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
