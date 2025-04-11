@@ -87,33 +87,6 @@
   );
   observer.observe(stickyElm);
 
-  // translation select input
-  const translationInput = document.querySelector("select.translation");
-  if (localStorage.getItem("simple-bible-translation")) {
-    translationInput.value = localStorage.getItem("simple-bible-translation");
-    document.querySelector(".logo").href = `/${localStorage.getItem(
-      "simple-bible-translation"
-    )}/`;
-  }
-  translationInput.addEventListener("change", function (event) {
-    const url = new URL(window.location);
-    const translation = event.target.value;
-    localStorage.setItem("simple-bible-translation", translation);
-    if (url.hash) {
-      const paths = url.pathname.split("/");
-      // hacky way to keep user at current verse
-      if (paths.length === 4) {
-        // user had a preferred translation set
-        window.location.href = `/${translation}/${paths[2]}/${url.hash}`;
-      } else {
-        // user first time setting preferred translation
-        window.location.href = `/${translation}/${paths[1]}/${url.hash}`;
-      }
-    } else {
-      window.location.href = `/${translation}/`;
-    }
-  });
-
   // dark mode toggle
   const html = document.documentElement;
   const toggleButton = document.querySelector(".color-mode-toggle");
