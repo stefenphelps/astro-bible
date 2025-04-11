@@ -23,5 +23,5 @@ const description = `${currentText.replace(/\s+/g, " ").trim()}` || "";
 	const url = new URL(window.location);
 	const bookName = url.searchParams.get("book");
 	const book = slugify(bookName, { lower: true });
-	window.location.href = `https://astro-bible.netlify.app/${book}${url.hash}`;
+	window.location.href = `https://bible.stefenphelps.com/${book}${url.hash}`;
 </script>
