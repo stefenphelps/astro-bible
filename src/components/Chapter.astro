@@ -1,35 +1,34 @@
 ---
 interface Props {
 	book: string;
-	chapter: [];
-	index: number;
+	chapterNumber: string;
+	verses: Record<string, string>;
 }
 
-const {book, chapter, index} = Astro.props;
+const { book, chapterNumber, verses } = Astro.props;
+const entries = Object.entries(verses); // [["1", "In the beginning..."], ["2", "The earth..."], ...]
 ---
-<section class='chapter' id=`chapter-${index + 1}`>
-	<h2>Chapter {index + 1}</h2>
+<section class='chapter' id={`chapter-${chapterNumber}`}>
+	<h2>Chapter {chapterNumber}</h2>
 	<nav>
 		<ul>
-			{chapter.map((verse, subindex) => (
-					<>
-					{subindex % 10 === 0 && (
-						<li>
-							<a href=`#chapter-${index + 1}-verse-${subindex + 1}`>
-								{subindex + 1}-{chapter.length <= subindex + 10 ? chapter.length : subindex + 10}
-							</a>
-						</li>
-					)}
-					</>
+			{entries.map(([verseNum], index) => (
+				<>
+				{index % 10 === 0 && (
+					<li>
+						<a href={`#chapter-${chapterNumber}-verse-${verseNum}`}>
+							{verseNum}-{parseInt(verseNum) + 9 > entries.length ? entries.length : parseInt(verseNum) + 9}
+						</a>
+					</li>
+				)}
+				</>
 			))}
 		</ul>
 	</nav>
-	{chapter.map((verse, subindex) => (
-		<p id=`chapter-${index + 1}-verse-${subindex + 1}` tabindex="0" data-book={book} data-chapter={index + 1} data-verse={subindex + 1}>
-			{ subindex != 0  &&(
-				<sup>{subindex + 1}&nbsp;</sup>
-			)}
-			<span>{verse}</span>
+	{entries.map(([verseNum, text], index) => (
+		<p id={`chapter-${chapterNumber}-verse-${verseNum}`} tabindex="0" data-book={book} data-chapter={chapterNumber} data-verse={verseNum}>
+			{verseNum !== "1" && <sup>{verseNum}&nbsp;</sup>}
+			<span>{text}</span>
 		</p>
 	))}
 </section>

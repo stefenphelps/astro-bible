@@ -2,7 +2,7 @@
 export const prerender = true;
 
 import slugify from "slugify";
-import bible from "../content/en_kjv.json";
+import bible from "../content/esv.json";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -10,13 +10,13 @@ import Layout from "../layouts/Layout.astro";
 	<main class='wrapper'>
 		<ol class="books">
 			{
-				bible.map((book) => (
+				Object.entries(bible).map(([bookName, chaptersObj]) => (
 					<li>
-						<a data-astro-prefetch="viewport" href=`/${slugify(book.name, { lower: true })}/`>{book.name}</a>
+						<a data-astro-prefetch="viewport" href={`/${slugify(bookName, { lower: true })}/`}>{bookName}</a>
 						<ol class="books-chapters">
-							{book.chapters.map((chapter, index) => (
+							{Object.keys(chaptersObj).map((chapterNum) => (
 								<li>
-									<a href=`${slugify(book.name, { lower: true })}/#chapter-${index + 1}`>{index + 1}</a>
+									<a href={`/${slugify(bookName, { lower: true })}/#chapter-${chapterNum}`}>{chapterNum}</a>
 								</li>
 							))}
 						</ol>

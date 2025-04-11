@@ -2,11 +2,22 @@
 export const prerender = true;
 
 import Layout from "../layouts/Layout.astro";
-import bible from "../content/en_kjv.json";
+import bible from "../content/esv.json";
 
-const randomBook = bible[Math.floor(Math.random() * bible.length)];
-const randomChapter = randomBook.chapters[Math.floor(Math.random() * randomBook.chapters.length)];
-const randomVerse = randomChapter[Math.floor(Math.random() * randomChapter.length)];
+// Get random book
+const bookNames = Object.keys(bible);
+const randomBookName = bookNames[Math.floor(Math.random() * bookNames.length)];
+const book = bible[randomBookName];
+
+// Get random chapter
+const chapterNumbers = Object.keys(book);
+const randomChapterNumber = chapterNumbers[Math.floor(Math.random() * chapterNumbers.length)];
+const chapter = book[randomChapterNumber];
+
+// Get random verse
+const verseNumbers = Object.keys(chapter);
+const randomVerseNumber = verseNumbers[Math.floor(Math.random() * verseNumbers.length)];
+const randomVerse = chapter[randomVerseNumber];
 ---
 
 <Layout title='Error 404 | The Simple Bible'>
@@ -15,7 +26,7 @@ const randomVerse = randomChapter[Math.floor(Math.random() * randomChapter.lengt
 		<p>Sorry, you seem to have lost your way. Here's a random verse for you instead:</p>
 		<blockquote>
 			{randomVerse}
-			<cite>{randomBook.name}</cite>
+			<cite>{randomBookName} {randomChapterNumber}:{randomVerseNumber}</cite>
 		</blockquote>
 	</main>
 </Layout>
