@@ -2,26 +2,36 @@
 import Layout from "../layouts/Layout.astro";
 import bible from "../content/esv.json";
 
-const currentBook = Astro.url.searchParams.get("book");
-const currentChapter = Astro.url.searchParams.get("chapter");
-const currentVerse = Astro.url.searchParams.get("verse");
+const url = Astro.url;
+const currentBook = url.searchParams.get("book") ?? "";
+const currentChapter = url.searchParams.get("chapter") ?? "";
+const currentVerse = url.searchParams.get("verse") ?? "";
 
-const book = bible.find((page) => page.name === currentBook) || "";
-const currentText = book.chapters[currentChapter - 1][currentVerse - 1];
-const title = `${currentBook} ${currentChapter}:${currentVerse}` || "";
-const description = `${currentText.replace(/\s+/g, " ").trim()}` || "";
+const book = bible[currentBook];
+const chapter = book?.[currentChapter];
+const currentText = chapter?.[currentVerse] ?? "";
+
+const title = currentBook && currentChapter && currentVerse
+	? `${currentBook} ${currentChapter}:${currentVerse}`
+	: "Verse Not Found";
+
+const description = currentText.replace(/\s+/g, " ").trim();
 ---
 
 <Layout title={title} description={description}>
-	<main class='wrapper'>
+	<main class="wrapper">
 		<h1>Loading Verse...</h1>
 	</main>
 </Layout>
 
 <script>
 	import slugify from "slugify";
+
 	const url = new URL(window.location);
 	const bookName = url.searchParams.get("book");
-	const book = slugify(bookName, { lower: true });
-	window.location.href = `https://bible.stefenphelps.com/${book}${url.hash}`;
+	const bookSlug = slugify(bookName, { lower: true });
+
+	if (bookSlug) {
+		window.location.href = `https://bible.stefenphelps.com/${bookSlug}${url.hash}`;
+	}
 </script>

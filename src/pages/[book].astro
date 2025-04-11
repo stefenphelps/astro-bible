@@ -24,7 +24,11 @@ const description = "";
 	<main class='wrapper'>
 		<h1>{bookName}</h1>
 		{Object.entries(book).map(([chapterNumber, verses]) => (
-			<Chapter book={bookName} chapterNumber={chapterNumber} verses={verses} />
+			<Chapter
+				book={bookName}
+				chapterNumber={chapterNumber}
+				verses={verses as Record<string, string>}
+			/>
 		))}
 	</main>
 </Layout>
