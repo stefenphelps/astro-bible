@@ -9,14 +9,13 @@ An intentionally simple Bible PWA with offline support.
 ├── public/
 ├── src/
 │   ├── components/
+│   ├── content/
 │   ├── layouts/
 │   └── pages/
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-Any static assets, like images, can be placed in the `public/` directory.
+The Bible translations are JSON files inside of the `content` directory.
 
 ## 🧞 Commands
 
