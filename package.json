@@ -11,18 +11,18 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^6.3.3",
-    "@astrojs/sitemap": "^3.4.0",
+    "@astrojs/netlify": "^6.4.0",
+    "@astrojs/sitemap": "^3.4.1",
     "@vite-pwa/astro": "^1.1.0",
-    "astro": "^5.7.13",
+    "astro": "^5.10.1",
     "autoprefixer": "^10.4.21",
     "node-snackbar": "^0.1.16",
     "sanitize.css": "^13.0.0",
-    "sass": "^1.89.0",
+    "sass": "^1.89.2",
     "slugify": "^1.6.6"
   },
   "devDependencies": {
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.0",
     "prettier-plugin-astro": "^0.14.1"
   }
 }
