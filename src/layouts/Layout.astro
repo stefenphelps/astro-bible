@@ -49,13 +49,34 @@ const {
 		{pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
 		<script is:inline>
 			// purposefully make render blocking to prevent flash of wrong theme
+			const themeColors = {
+				light: "#fff7ed",
+				dark: "#292524"
+			};
+			const themeMeta = document.querySelector("meta[name='theme-color']");
+			const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+			const updateThemeColor = (value) => {
+				if (!themeMeta) return;
+				themeMeta.setAttribute("content", themeColors[value] || themeColors.light);
+			};
+
 			const setColorScheme = (value) => {
 				document.documentElement.dataset.colorScheme = value;
 				localStorage.setItem("color-scheme", value);
+				updateThemeColor(value);
 			};
 
-			if (localStorage.getItem("color-scheme")) {
-				setColorScheme(localStorage.getItem("color-scheme"));
+			const storedScheme = localStorage.getItem("color-scheme");
+			if (storedScheme) {
+				setColorScheme(storedScheme);
+			} else {
+				updateThemeColor(prefersDark.matches ? "dark" : "light");
+				prefersDark.addEventListener("change", (event) => {
+					if (!localStorage.getItem("color-scheme")) {
+						updateThemeColor(event.matches ? "dark" : "light");
+					}
+				});
 			}
 		</script>
 	</head>
