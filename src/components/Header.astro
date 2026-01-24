@@ -102,6 +102,7 @@ import { translationMeta } from "../content/translations";
   <output></output>
 </dialog>
 <script>
+  import Snackbar from "node-snackbar";
   // drop shadow on the header
   const stickyElm = document.querySelector("header");
   const observer = new IntersectionObserver(
@@ -198,8 +199,24 @@ import { translationMeta } from "../content/translations";
     sessionStorage.setItem("translation-anchor", firstVisible.id);
   };
 
+  const showOfflineTranslationToast = () => {
+    Snackbar.show({
+      actionTextColor: "var(--accent)",
+      text: "Offline: get back online for other translations.",
+    });
+  };
+
+  if (!navigator.onLine && currentTranslation !== "esv") {
+    showOfflineTranslationToast();
+  }
+
   translationSelect.addEventListener("change", () => {
     const selected = translationSelect.value;
+    if (!navigator.onLine && selected !== "esv") {
+      translationSelect.value = currentTranslation;
+      showOfflineTranslationToast();
+      return;
+    }
     localStorage.setItem("translation", selected);
 
     const hasTranslation = translations.includes(pathParts[0]);

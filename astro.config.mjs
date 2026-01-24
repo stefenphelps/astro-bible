@@ -13,6 +13,10 @@ export default defineConfig({
   integrations: [
     sitemap(),
     AstroPWA({
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,webmanifest}"],
+        globIgnores: ["**/kjv/**", "**/niv/**", "**/nlt/**"],
+      },
       manifest: {
         base: "/",
         scope: "/",
@@ -23,35 +27,35 @@ export default defineConfig({
         categories: ["books", "education", "religious"],
         screenshots: [
           {
-            src: "home-dark.PNG",
+            src: "/screenshots/home-dark.PNG",
             sizes: "1179x2556",
             type: "image/png",
             platform: "narrow",
             label: "Homescreen in dark mode",
           },
           {
-            src: "home-light.PNG",
+            src: "/screenshots/home-light.PNG",
             sizes: "1179x2556",
             type: "image/png",
             platform: "narrow",
             label: "Homescreen in light mode",
           },
           {
-            src: "verse-dark.PNG",
+            src: "/screenshots/verse-dark.PNG",
             sizes: "1179x2556",
             type: "image/png",
             platform: "narrow",
             label: "Genesis 1:2 in dark mode",
           },
           {
-            src: "verse-light.PNG",
+            src: "/screenshots/verse-light.PNG",
             sizes: "1179x2556",
             type: "image/png",
             platform: "narrow",
             label: "Genesis 1:2 in light mode",
           },
         ],
-        start_url: "https://bible.stefenphelps.com",
+        start_url: "/",
         theme_color: "#fff7ed",
         background_color: "#fff7ed",
         display: "standalone",
@@ -61,9 +65,10 @@ export default defineConfig({
             src: "/pwa-192x192.png",
             sizes: "192x192",
             type: "image/png",
+            purpose: "any",
           },
           {
-            src: "/safari-pinned-tab.svg",
+            src: "/pwa-512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",

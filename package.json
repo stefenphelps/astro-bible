@@ -14,15 +14,15 @@
     "@astrojs/netlify": "^6.6.4",
     "@astrojs/sitemap": "^3.7.0",
     "@vite-pwa/astro": "^1.2.0",
-    "astro": "^5.16.11",
+    "astro": "^5.16.15",
     "autoprefixer": "^10.4.23",
     "node-snackbar": "^0.1.16",
     "sanitize.css": "^13.0.0",
-    "sass": "^1.97.2",
+    "sass": "^1.97.3",
     "slugify": "^1.6.6"
   },
   "devDependencies": {
-    "prettier": "^3.8.0",
+    "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1"
   }
 }
