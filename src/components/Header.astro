@@ -138,6 +138,26 @@ import { translationMeta } from "../content/translations";
     setColorScheme(scheme);
   });
 
+  const restoreVersePosition = () => {
+    const storedId = sessionStorage.getItem("translation-anchor");
+    if (!storedId) {
+      return;
+    }
+    sessionStorage.removeItem("translation-anchor");
+    const target = document.getElementById(storedId);
+    if (!target) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      const header = document.querySelector("header");
+      const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+      const targetTop = target.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo(0, targetTop - headerBottom);
+    });
+  };
+
+  window.addEventListener("DOMContentLoaded", restoreVersePosition, { once: true });
+
   // share toggle
   const storedShare = localStorage.getItem("share-enabled");
   const shareEnabled = storedShare ? storedShare === "true" : false;
@@ -162,6 +182,22 @@ import { translationMeta } from "../content/translations";
   const storedTranslation = localStorage.getItem("translation");
   translationSelect.value = storedTranslation || currentTranslation;
 
+  const storeVersePosition = () => {
+    const verses = Array.from(document.querySelectorAll(".chapter p"));
+    if (!verses.length) {
+      return;
+    }
+    const header = document.querySelector("header");
+    const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+    const firstVisible =
+      verses.find((verse) => verse.getBoundingClientRect().top >= headerBottom - 1) ??
+      verses[verses.length - 1];
+    if (!firstVisible || !firstVisible.id) {
+      return;
+    }
+    sessionStorage.setItem("translation-anchor", firstVisible.id);
+  };
+
   translationSelect.addEventListener("change", () => {
     const selected = translationSelect.value;
     localStorage.setItem("translation", selected);
@@ -169,18 +205,19 @@ import { translationMeta } from "../content/translations";
     const hasTranslation = translations.includes(pathParts[0]);
     const pathWithoutTranslation = hasTranslation ? pathParts.slice(1) : pathParts;
     const basePath = pathWithoutTranslation.join("/");
+    storeVersePosition();
 
     if (!basePath) {
-      window.location.pathname = selected === "esv" ? "/" : `/${selected}/`;
+      window.location.assign(selected === "esv" ? "/" : `/${selected}/`);
       return;
     }
 
     if (selected === "esv") {
-      window.location.pathname = `/${basePath}/`;
+      window.location.assign(`/${basePath}/`);
       return;
     }
 
-    window.location.pathname = `/${selected}/${basePath}/`;
+    window.location.assign(`/${selected}/${basePath}/`);
   });
 
   // questions popup
