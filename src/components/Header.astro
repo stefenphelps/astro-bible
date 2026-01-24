@@ -1,9 +1,32 @@
 ---
+import { translationMeta } from "../content/translations";
 ---
 
 <header>
   <div class="wrapper">
     <h1><a href="/" class="logo">The Bible</a></h1>
+    <div class="translation-select-wrap">
+      <select class="translation-select" aria-label="Select translation">
+        {translationMeta.map(({ id, label }) => (
+          <option value={id}>{label}</option>
+        ))}
+      </select>
+    </div>
+    <button class="share-toggle" aria-pressed="false" title="Toggle share mode">
+      <span class="screen-reader-text">Toggle share mode</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 640 640"
+        width="18"
+        height="18"
+        aria-hidden="true"
+      >
+        <path
+          fill="currentColor"
+          d="M347 379L505.4 163.9L476.1 134.6L261 293L347 379zM160 384L160 384L160 312.3C160 297 167.2 282.7 179.5 273.7L452.6 72.4C460 66.9 469 64 478.2 64C489.6 64 500.5 68.5 508.6 76.6L563.4 131.4C571.5 139.5 576 150.4 576 161.9C576 171.1 573.1 180.1 567.6 187.5L366.4 460.5C357.4 472.8 343 480 327.8 480L256.1 480L230.7 505.4C218.2 517.9 197.9 517.9 185.4 505.4L134.7 454.7C122.2 442.2 122.2 421.9 134.7 409.4L160 384zM39 530.3L90.7 478.6L161.3 549.2L141.6 568.9C137.1 573.4 131 575.9 124.6 575.9L56 576C42.7 576 32 565.3 32 552L32 547.3C32 540.9 34.5 534.8 39 530.3z"
+        ></path>
+      </svg>
+    </button>
     <button class="question">
       <span class="screen-reader-text">Have a question?</span>
       <svg
@@ -91,6 +114,11 @@
   const html = document.documentElement;
   const toggleButton = document.querySelector(".color-mode-toggle");
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+  const translationSelect = document.querySelector(".translation-select");
+  const translations = Array.from(translationSelect.options).map(
+    (option) => option.value
+  );
+  const shareToggle = document.querySelector(".share-toggle");
 
   const setColorScheme = (value) => {
     html.dataset.colorScheme = value;
@@ -108,6 +136,51 @@
     }
     const scheme = html.dataset.colorScheme === "dark" ? "light" : "dark";
     setColorScheme(scheme);
+  });
+
+  // share toggle
+  const storedShare = localStorage.getItem("share-enabled");
+  const shareEnabled = storedShare ? storedShare === "true" : false;
+  html.dataset.shareEnabled = shareEnabled ? "true" : "false";
+  shareToggle.classList.toggle("active", shareEnabled);
+  shareToggle.setAttribute("aria-pressed", shareEnabled ? "true" : "false");
+
+  shareToggle.addEventListener("click", () => {
+    const enabled = html.dataset.shareEnabled !== "true";
+    html.dataset.shareEnabled = enabled ? "true" : "false";
+    localStorage.setItem("share-enabled", enabled ? "true" : "false");
+    shareToggle.classList.toggle("active", enabled);
+    shareToggle.setAttribute("aria-pressed", enabled ? "true" : "false");
+  });
+
+  // translation selector
+  const currentPath = window.location.pathname.replace(/\/+$/, "");
+  const pathParts = currentPath.split("/").filter(Boolean);
+  const currentTranslation = translations.includes(pathParts[0])
+    ? pathParts[0]
+    : "esv";
+  const storedTranslation = localStorage.getItem("translation");
+  translationSelect.value = storedTranslation || currentTranslation;
+
+  translationSelect.addEventListener("change", () => {
+    const selected = translationSelect.value;
+    localStorage.setItem("translation", selected);
+
+    const hasTranslation = translations.includes(pathParts[0]);
+    const pathWithoutTranslation = hasTranslation ? pathParts.slice(1) : pathParts;
+    const basePath = pathWithoutTranslation.join("/");
+
+    if (!basePath) {
+      window.location.pathname = selected === "esv" ? "/" : `/${selected}/`;
+      return;
+    }
+
+    if (selected === "esv") {
+      window.location.pathname = `/${basePath}/`;
+      return;
+    }
+
+    window.location.pathname = `/${selected}/${basePath}/`;
   });
 
   // questions popup
@@ -147,11 +220,11 @@
     postData("/api/ask.json/", { question: question }).then((data) => {
       console.log(data);
       if (data.message) {
-        output.innerHTML = data.message.replace(/(\r\n|\r|\n)/g, "<br>");
+        output.textContent = data.message;
         loading.classList.remove("active");
       } else {
         loading.classList.remove("active");
-        output.innerHTML = "Sorry, there was an error. Try again later.";
+        output.textContent = "Sorry, there was an error. Try again later.";
       }
     });
   });
@@ -179,11 +252,30 @@
       font-size: var(--step-1);
       margin: 0;
     }
+    --select-arrow-color: var(--text);
+    .translation-select-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      &::after {
+        content: "";
+        position: absolute;
+        right: 0.35rem;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid var(--select-arrow-color);
+        pointer-events: none;
+      }
+    }
     select {
       border: 0 none;
       appearance: none;
       font-size: 14px;
-      padding-right: 1.5rem;
+      padding-right: 1.7rem;
+      background: none;
+      color: var(--text);
     }
     button {
       appearance: none;
@@ -194,6 +286,20 @@
     }
     .question {
       margin-left: auto;
+    }
+    .share-toggle {
+      color: var(--text);
+      &.active {
+        color: var(--accent);
+      }
+    }
+  }
+  :global(html[data-color-scheme="dark"]) header {
+    --select-arrow-color: var(--accent);
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(html:not([data-color-scheme])) header {
+      --select-arrow-color: var(--accent);
     }
   }
   dialog {
@@ -244,6 +350,7 @@
       display: block;
       font-style: italic;
       font-size: var(--step-0);
+      white-space: pre-line;
       &:empty {
         display: none;
       }

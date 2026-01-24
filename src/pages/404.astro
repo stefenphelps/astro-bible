@@ -2,12 +2,13 @@
 export const prerender = true;
 
 import Layout from "../layouts/Layout.astro";
-import bible from "../content/esv.json";
+import { bibleByTranslation } from "../content/bibles";
+import { defaultTranslationId } from "../content/translations";
 
 // Get random book
-const bookNames = Object.keys(bible);
+const bookNames = Object.keys(bibleByTranslation[defaultTranslationId]);
 const randomBookName = bookNames[Math.floor(Math.random() * bookNames.length)];
-const book = bible[randomBookName];
+const book = bibleByTranslation[defaultTranslationId][randomBookName];
 
 // Get random chapter
 const chapterNumbers = Object.keys(book);

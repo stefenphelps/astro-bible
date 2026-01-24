@@ -1,41 +1,51 @@
 body {
-	background: var(--bg);
-	color: var(--text);
-	font-size: var(--step-1);
-	transition: 350ms ease;
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--step-1);
+  transition: 350ms ease;
 }
 h1 {
-	font-size: var(--step-5);
-	margin: 0 0 1rem;
-	line-height: 1.2;
+  font-size: var(--step-5);
+  margin: 0 0 1rem;
+  line-height: 1.2;
 }
 h2 {
-	font-size: var(--step-3);
-	line-height: 1.2;
+  font-size: var(--step-3);
+  line-height: 1.2;
 }
 p {
-	max-width: 60ch;
+  max-width: 60ch;
 }
 blockquote {
-	border-left: 0.5rem solid;
-	margin-left: 0;
-	padding-left: 1em;
-	cite {
-		display: block;
-		font-size: var(--step-0);
-		margin-top: 1rem;
-		&::before {
-			content: "— from the book of ";
-		}
-	}
+  border-left: 0.5rem solid;
+  margin-left: 0;
+  padding-left: 1em;
+  cite {
+    display: block;
+    font-size: var(--step-0);
+    margin-top: 1rem;
+    &::before {
+      content: "— from the book of ";
+    }
+  }
 }
 a {
-	color: var(--text);
-	text-decoration: none;
-	&:hover,
-	&:focus {
-		outline: 0 none;
-		box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
-			var(--accent) 0px -0.4em 0px 0px inset;
-	}
+  color: var(--text);
+  text-decoration: none;
+  &:hover,
+  &:focus {
+    outline: 0 none;
+    box-shadow:
+      rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+      rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+      var(--accent) 0px -0.4em 0px 0px inset;
+  }
+}
+* {
+  outline-color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

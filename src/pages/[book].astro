@@ -2,20 +2,21 @@
 export const prerender = true;
 
 import slugify from "slugify";
-import bible from "../content/esv.json";
+import { bibleByTranslation } from "../content/bibles";
+import { defaultTranslationId } from "../content/translations";
 import Layout from "../layouts/Layout.astro";
 import Chapter from "../components/Chapter.astro";
 
 // Generate static paths from book names
 export async function getStaticPaths() {
-	return Object.keys(bible).map((bookName) => ({
+	return Object.keys(bibleByTranslation[defaultTranslationId]).map((bookName) => ({
 		params: { book: slugify(bookName, { lower: true }) },
 		props: { bookName }
 	}));
 }
 
 const { bookName } = Astro.props;
-const book = bible[bookName];
+const book = bibleByTranslation[defaultTranslationId][bookName];
 const title = `${bookName} | The Simple Bible`;
 const description = "";
 ---
@@ -25,6 +26,7 @@ const description = "";
 		<h1>{bookName}</h1>
 		{Object.entries(book).map(([chapterNumber, verses]) => (
 			<Chapter
+				translation={defaultTranslationId}
 				book={bookName}
 				chapterNumber={chapterNumber}
 				verses={verses as Record<string, string>}
