@@ -56,8 +56,8 @@ export default defineConfig({
           },
         ],
         start_url: "/",
-        theme_color: "#fff7ed",
-        background_color: "#fff7ed",
+        theme_color: "#292524",
+        background_color: "#292524",
         display: "standalone",
         includeAssets: ["*.{png,ico,svg,jpg,xml}"],
         icons: [

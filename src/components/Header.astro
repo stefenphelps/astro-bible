@@ -115,23 +115,15 @@ import { translationMeta } from "../content/translations";
   const html = document.documentElement;
   const toggleButton = document.querySelector(".color-mode-toggle");
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-  const themeMeta = document.querySelector("meta[name='theme-color']");
-  const themeColors = { light: "#fff7ed", dark: "#292524" };
   const translationSelect = document.querySelector(".translation-select");
   const translations = Array.from(translationSelect.options).map(
     (option) => option.value
   );
   const shareToggle = document.querySelector(".share-toggle");
 
-  const updateThemeColor = (value) => {
-    if (!themeMeta) return;
-    themeMeta.setAttribute("content", themeColors[value] || themeColors.light);
-  };
-
   const setColorScheme = (value) => {
     html.dataset.colorScheme = value;
     localStorage.setItem("color-scheme", value);
-    updateThemeColor(value);
   };
 
   if (localStorage.getItem("color-scheme")) {
