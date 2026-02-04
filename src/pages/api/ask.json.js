@@ -14,6 +14,7 @@ export async function POST({ request }) {
       ],
       temperature: 0.7,
       max_tokens: 700,
+      stream: true,
     };
 
     const chatGpt = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -25,31 +26,76 @@ export async function POST({ request }) {
       body: JSON.stringify(data),
     });
 
-    const response = await chatGpt.json();
-    console.log("OpenAI API response:", response);
-
-    if (!response.choices || response.choices.length === 0) {
-      throw new Error("No choices returned from OpenAI API");
+    if (!chatGpt.ok) {
+      const errorBody = await chatGpt.text();
+      throw new Error(`OpenAI API error (${chatGpt.status}): ${errorBody}`);
     }
 
-    const text = response.choices[0].message.content;
+    if (!chatGpt.body) {
+      throw new Error("OpenAI API returned an empty response body");
+    }
 
-    // log question
-    console.log(body.question);
-    // log answer
-    console.log(text);
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
 
-    return new Response(
-      JSON.stringify({
-        message: text,
-      }),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = chatGpt.body.getReader();
+        let buffer = "";
+        let closed = false;
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              break;
+            }
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed.startsWith("data:")) {
+                continue;
+              }
+
+              const payload = trimmed.slice(5).trim();
+              if (payload === "[DONE]") {
+                closed = true;
+                controller.close();
+                return;
+              }
+
+              try {
+                const chunk = JSON.parse(payload);
+                const content = chunk.choices?.[0]?.delta?.content;
+                if (content) {
+                  controller.enqueue(encoder.encode(content));
+                }
+              } catch (error) {
+                console.error("Failed to parse OpenAI stream chunk:", error);
+              }
+            }
+          }
+        } finally {
+          reader.releaseLock();
+          if (!closed) {
+            controller.close();
+          }
+        }
+      },
+    });
+
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",
+      },
+    });
   } catch (error) {
     console.error("Error:", error);
     return new Response(
