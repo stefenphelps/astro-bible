@@ -1,38 +1,98 @@
+const SYSTEM_PROMPT =
+  "You are a pastor for a protestant church. All your responses should try to include Bible references.";
+const DEFAULT_MODEL = "gpt-5-nano";
+const MAX_QUESTION_CHARS = 2000;
+
+function jsonResponse(body, status) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+function getQuestion(input) {
+  const question = input?.question;
+  if (typeof question !== "string") {
+    return null;
+  }
+
+  const trimmed = question.trim();
+  if (!trimmed || trimmed.length > MAX_QUESTION_CHARS) {
+    return null;
+  }
+
+  return trimmed;
+}
+
 export async function POST({ request }) {
+  const apiKey = import.meta.env.OPENAI_API_KEY || import.meta.env.OPENAI_KEY;
+  if (!apiKey) {
+    return jsonResponse({ error: "OpenAI API key is not configured." }, 500);
+  }
+
+  let payload;
   try {
-    const body = await request.json();
+    payload = await request.json();
+  } catch {
+    return jsonResponse({ error: "Invalid JSON body." }, 400);
+  }
 
-    const data = {
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a pastor for a protestant church. All your responses should try to include Bible references.",
-        },
-        { role: "user", content: `${body.question}` },
-      ],
-      temperature: 0.7,
-      max_tokens: 700,
-      stream: true,
-    };
+  const question = getQuestion(payload);
+  if (!question) {
+    return jsonResponse(
+      {
+        error: `Please provide a non-empty question up to ${MAX_QUESTION_CHARS} characters.`,
+      },
+      400
+    );
+  }
 
-    const chatGpt = await fetch("https://api.openai.com/v1/chat/completions", {
+  try {
+    const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
       headers: {
-        Authorization: `Bearer ${import.meta.env.OPENAI_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        model: import.meta.env.OPENAI_MODEL || DEFAULT_MODEL,
+        input: [
+          {
+            role: "system",
+            content: [{ type: "input_text", text: SYSTEM_PROMPT }],
+          },
+          {
+            role: "user",
+            content: [{ type: "input_text", text: question }],
+          },
+        ],
+        reasoning: {
+          effort: "minimal",
+        },
+        max_output_tokens: 700,
+        stream: true,
+      }),
+      signal: request.signal,
     });
 
-    if (!chatGpt.ok) {
-      const errorBody = await chatGpt.text();
-      throw new Error(`OpenAI API error (${chatGpt.status}): ${errorBody}`);
+    if (!openaiResponse.ok) {
+      const requestId = openaiResponse.headers.get("x-request-id");
+      const errorBody = await openaiResponse.text();
+      console.error("OpenAI API error:", openaiResponse.status, requestId, errorBody);
+
+      return jsonResponse(
+        {
+          error: "Failed to generate a response.",
+          requestId: requestId || undefined,
+        },
+        openaiResponse.status >= 500 ? 502 : openaiResponse.status
+      );
     }
 
-    if (!chatGpt.body) {
-      throw new Error("OpenAI API returned an empty response body");
+    if (!openaiResponse.body) {
+      return jsonResponse({ error: "OpenAI API returned an empty response body." }, 502);
     }
 
     const encoder = new TextEncoder();
@@ -40,7 +100,7 @@ export async function POST({ request }) {
 
     const stream = new ReadableStream({
       async start(controller) {
-        const reader = chatGpt.body.getReader();
+        const reader = openaiResponse.body.getReader();
         let buffer = "";
         let closed = false;
 
@@ -52,27 +112,34 @@ export async function POST({ request }) {
             }
 
             buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split("\n");
-            buffer = lines.pop() || "";
+            const events = buffer.split("\n\n");
+            buffer = events.pop() || "";
 
-            for (const line of lines) {
-              const trimmed = line.trim();
-              if (!trimmed.startsWith("data:")) {
+            for (const event of events) {
+              const dataLines = event
+                .split("\n")
+                .filter((line) => line.startsWith("data:"))
+                .map((line) => line.slice(5).trimStart());
+
+              if (!dataLines.length) {
                 continue;
               }
 
-              const payload = trimmed.slice(5).trim();
-              if (payload === "[DONE]") {
+              const data = dataLines.join("\n").trim();
+              if (!data) {
+                continue;
+              }
+
+              if (data === "[DONE]") {
                 closed = true;
                 controller.close();
                 return;
               }
 
               try {
-                const chunk = JSON.parse(payload);
-                const content = chunk.choices?.[0]?.delta?.content;
-                if (content) {
-                  controller.enqueue(encoder.encode(content));
+                const chunk = JSON.parse(data);
+                if (chunk.type === "response.output_text.delta" && chunk.delta) {
+                  controller.enqueue(encoder.encode(chunk.delta));
                 }
               } catch (error) {
                 console.error("Failed to parse OpenAI stream chunk:", error);
@@ -97,17 +164,7 @@ export async function POST({ request }) {
       },
     });
   } catch (error) {
-    console.error("Error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    console.error("Unexpected error:", error);
+    return jsonResponse({ error: "Internal server error." }, 500);
   }
 }
