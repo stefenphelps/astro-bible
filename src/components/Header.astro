@@ -1,5 +1,9 @@
 ---
 import { translationMeta } from "../content/translations";
+import {
+  defaultPastorDenominationId,
+  pastorDenominations,
+} from "../content/pastorDenominations";
 ---
 
 <header>
@@ -80,10 +84,26 @@ import { translationMeta } from "../content/translations";
   </button>
   <h2>Have a question about the Bible?</h2>
   <p>
-    Ask anything below and the 🤖 "Pastor" will try its best to let you know
-    what the Bible says about it.
+    Ask anything below and the 🤖
+    <button
+      type="button"
+      class="pastor-secret-trigger"
+      aria-controls="pastor-settings"
+      aria-expanded="false"
+    >
+      Pastor
+    </button>
+    will try its best to let you know what the Bible says about it.
   </p>
   <form>
+    <div class="pastor-settings" id="pastor-settings" hidden>
+      <label for="pastor-denomination">AI Pastor tradition:</label>
+      <select id="pastor-denomination" data-default={defaultPastorDenominationId}>
+        {pastorDenominations.map(({ id, label }) => (
+          <option value={id}>{label}</option>
+        ))}
+      </select>
+    </div>
     <input type="search" placeholder="Your question..." required />
     <button type="submit">Submit</button>
   </form>
@@ -255,6 +275,39 @@ import { translationMeta } from "../content/translations";
   const output = document.querySelector("output");
   const questionInput = document.querySelector("dialog input");
   const submitButton = form.querySelector('button[type="submit"]');
+  const pastorSettings = document.querySelector("#pastor-settings");
+  const pastorSecretTrigger = document.querySelector(".pastor-secret-trigger");
+  const pastorDenominationSelect = document.querySelector("#pastor-denomination");
+  const pastorDenominationStorageKey = "pastor-denomination";
+  const pastorDenominations = Array.from(pastorDenominationSelect.options).map(
+    (option) => option.value
+  );
+  const defaultPastorDenomination =
+    pastorDenominationSelect.dataset.default || pastorDenominations[0];
+  const storedPastorDenomination = localStorage.getItem(
+    pastorDenominationStorageKey
+  );
+  const selectedPastorDenomination = pastorDenominations.includes(
+    storedPastorDenomination
+  )
+    ? storedPastorDenomination
+    : defaultPastorDenomination;
+
+  pastorDenominationSelect.value = selectedPastorDenomination;
+  localStorage.setItem(pastorDenominationStorageKey, selectedPastorDenomination);
+
+  pastorSecretTrigger.addEventListener("click", () => {
+    const isOpen = !pastorSettings.hidden;
+    pastorSettings.hidden = isOpen;
+    pastorSecretTrigger.setAttribute("aria-expanded", isOpen ? "false" : "true");
+    if (!isOpen) {
+      pastorDenominationSelect.focus();
+    }
+  });
+
+  pastorDenominationSelect.addEventListener("change", () => {
+    localStorage.setItem(pastorDenominationStorageKey, pastorDenominationSelect.value);
+  });
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -273,7 +326,10 @@ import { translationMeta } from "../content/translations";
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({
+          question,
+          denomination: pastorDenominationSelect.value,
+        }),
       });
 
       if (!response.ok || !response.body) {
@@ -401,10 +457,39 @@ import { translationMeta } from "../content/translations";
     h2 {
       margin-top: 0;
     }
+    p {
+      .pastor-secret-trigger {
+        border: 0 none;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        font: inherit;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+      }
+    }
     form {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem 0;
+      .pastor-settings {
+        flex: 1 1 100%;
+        align-items: center;
+        gap: 0.5rem;
+        &[hidden] {
+          display: none;
+        }
+        &:not([hidden]) {
+          display: flex;
+        }
+        label {
+          font-size: 0.875rem;
+        }
+        select {
+          flex: 1 1 220px;
+        }
+      }
       input {
         flex: 1 1 200px;
       }
@@ -417,6 +502,7 @@ import { translationMeta } from "../content/translations";
         font-size: var(--step-0);
       }
       input,
+      select,
       button {
         border: 2px solid var(--bg);
         padding: 0.5rem 1rem;

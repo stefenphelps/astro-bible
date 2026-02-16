@@ -1,7 +1,21 @@
-const SYSTEM_PROMPT =
-  "You are a pastor for a protestant church. All your responses should try to include Bible references.";
+import {
+  defaultPastorDenominationId,
+  pastorDenominations,
+} from "../../content/pastorDenominations.js";
+
 const DEFAULT_MODEL = "gpt-5-nano";
 const MAX_QUESTION_CHARS = 2000;
+const denominationPromptById = new Map(
+  pastorDenominations.map((denomination) => [denomination.id, denomination.prompt])
+);
+
+function getSystemPrompt(denominationId) {
+  return (
+    denominationPromptById.get(denominationId) ||
+    denominationPromptById.get(defaultPastorDenominationId) ||
+    "You are a Christian pastor. Include Bible references in your responses."
+  );
+}
 
 function jsonResponse(body, status) {
   return new Response(JSON.stringify(body), {
@@ -24,6 +38,18 @@ function getQuestion(input) {
   }
 
   return trimmed;
+}
+
+function getDenominationId(input) {
+  const denomination = input?.denomination;
+  if (typeof denomination !== "string") {
+    return defaultPastorDenominationId;
+  }
+
+  const normalized = denomination.trim().toLowerCase();
+  return denominationPromptById.has(normalized)
+    ? normalized
+    : defaultPastorDenominationId;
 }
 
 export async function POST({ request }) {
@@ -49,6 +75,8 @@ export async function POST({ request }) {
     );
   }
 
+  const denominationId = getDenominationId(payload);
+
   try {
     const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -61,7 +89,7 @@ export async function POST({ request }) {
         input: [
           {
             role: "system",
-            content: [{ type: "input_text", text: SYSTEM_PROMPT }],
+            content: [{ type: "input_text", text: getSystemPrompt(denominationId) }],
           },
           {
             role: "user",
