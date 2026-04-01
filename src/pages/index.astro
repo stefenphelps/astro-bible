@@ -6,9 +6,26 @@ import { defaultTranslationId } from "../content/translations";
 import BooksList from "../components/BooksList.astro";
 import { SITE_DESCRIPTION, SITE_NAME } from "../consts";
 import Layout from "../layouts/Layout.astro";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  url: Astro.url.href,
+  isPartOf: {
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: (Astro.site ?? Astro.url).href,
+  },
+};
 ---
 
-<Layout title={SITE_NAME} description={SITE_DESCRIPTION}>
+<Layout
+  title={SITE_NAME}
+  description={SITE_DESCRIPTION}
+  structuredData={structuredData}
+>
   <main class="wrapper">
     <BooksList bible={bibleByTranslation[defaultTranslationId]} />
   </main>

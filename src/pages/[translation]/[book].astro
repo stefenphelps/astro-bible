@@ -5,6 +5,7 @@ import slugify from "slugify";
 import Layout from "../../layouts/Layout.astro";
 import Chapter from "../../components/Chapter.astro";
 import { bibleByTranslation } from "../../content/bibles";
+import { SITE_NAME } from "../../consts";
 import {
   defaultTranslationId,
   translationMeta,
@@ -31,9 +32,53 @@ const label =
   defaultTranslationId.toUpperCase();
 const title = `${bookName} (${label}) | The Simple Bible`;
 const description = `Read ${bookName} in the ${label} on The Simple Bible.`;
+const homeUrl = new URL("/", Astro.site ?? Astro.url);
+const translationUrl = new URL(`/${translationId}/`, Astro.site ?? Astro.url);
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    name: bookName,
+    inLanguage: "en",
+    url: Astro.url.href,
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: homeUrl.href,
+    },
+    workExample: {
+      "@type": "CreativeWork",
+      name: `${bookName} (${label})`,
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: SITE_NAME,
+        item: homeUrl.href,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: label,
+        item: translationUrl.href,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: bookName,
+        item: Astro.url.href,
+      },
+    ],
+  },
+];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} structuredData={structuredData}>
   <main class="wrapper">
     <h1>{bookName}</h1>
     {

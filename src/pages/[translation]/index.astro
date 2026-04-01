@@ -4,6 +4,7 @@ export const prerender = true;
 import BooksList from "../../components/BooksList.astro";
 import Layout from "../../layouts/Layout.astro";
 import { bibleByTranslation } from "../../content/bibles";
+import { SITE_NAME } from "../../consts";
 import {
   defaultTranslationId,
   translationMeta,
@@ -23,11 +24,44 @@ const bible =
 const label =
   translationMeta.find(({ id }) => id === translationId)?.label ??
   defaultTranslationId.toUpperCase();
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${SITE_NAME} (${label})`,
+    description: `Read ${label} in a simple Bible PWA with offline support and light/dark modes.`,
+    url: Astro.url.href,
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: (Astro.site ?? Astro.url).href,
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: SITE_NAME,
+        item: new URL("/", Astro.site ?? Astro.url).href,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: label,
+        item: Astro.url.href,
+      },
+    ],
+  },
+];
 ---
 
 <Layout
   title={`The Simple Bible (${label})`}
   description={`Read ${label} in a simple Bible PWA with offline support and light/dark modes.`}
+  structuredData={structuredData}
 >
   <main class="wrapper">
     <BooksList bible={bible} translation={translationId} />

@@ -2,6 +2,7 @@
 import "../styles/main.scss";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import StructuredData from "../components/StructuredData.astro";
 import { pwaInfo } from "virtual:pwa-info";
 import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_NAME } from "../consts";
 
@@ -9,16 +10,46 @@ export interface Props {
   title: string;
   description: string;
   image?: string;
+  structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const {
   title = SITE_NAME,
   description = SITE_DESCRIPTION,
   image = "/opengraph.png",
+  structuredData = [],
 } = Astro.props;
 const siteUrl = Astro.site ?? Astro.url;
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
 const socialImageUrl = new URL(image, siteUrl);
+const pageStructuredData = Array.isArray(structuredData)
+  ? structuredData
+  : [structuredData];
+const allStructuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: siteUrl.href,
+    inLanguage: "en",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    applicationCategory: "EducationalApplication",
+    browserRequirements: "Requires a modern web browser",
+    operatingSystem: "Any",
+    url: siteUrl.href,
+    author: {
+      "@type": "Person",
+      name: SITE_AUTHOR,
+    },
+  },
+  ...pageStructuredData,
+];
 ---
 
 <!doctype html>
@@ -51,6 +82,7 @@ const socialImageUrl = new URL(image, siteUrl);
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content={SITE_AUTHOR} />
+    <StructuredData data={allStructuredData} />
     {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     <script is:inline>
       // purposefully make render blocking to prevent flash of wrong theme

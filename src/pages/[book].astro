@@ -4,6 +4,7 @@ export const prerender = true;
 import slugify from "slugify";
 import { bibleByTranslation } from "../content/bibles";
 import { defaultTranslationId } from "../content/translations";
+import { SITE_NAME } from "../consts";
 import Layout from "../layouts/Layout.astro";
 import Chapter from "../components/Chapter.astro";
 
@@ -21,9 +22,46 @@ const { bookName } = Astro.props;
 const book = bibleByTranslation[defaultTranslationId][bookName]!;
 const title = `${bookName} | The Simple Bible`;
 const description = `Read ${bookName} in the ESV on The Simple Bible.`;
+const homeUrl = new URL("/", Astro.site ?? Astro.url);
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    name: bookName,
+    inLanguage: "en",
+    url: Astro.url.href,
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: homeUrl.href,
+    },
+    workExample: {
+      "@type": "CreativeWork",
+      name: `${bookName} (ESV)`,
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: SITE_NAME,
+        item: homeUrl.href,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: bookName,
+        item: Astro.url.href,
+      },
+    ],
+  },
+];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} structuredData={structuredData}>
   <main class="wrapper">
     <h1>{bookName}</h1>
     {
