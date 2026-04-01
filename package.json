@@ -11,15 +11,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^6.6.4",
-    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/netlify": "^7.0.5",
+    "@astrojs/sitemap": "^3.7.2",
     "@vite-pwa/astro": "^1.2.0",
-    "astro": "^5.17.2",
-    "autoprefixer": "^10.4.24",
+    "astro": "^6.1.2",
+    "autoprefixer": "^10.4.27",
     "node-snackbar": "^0.1.16",
     "sanitize.css": "^13.0.0",
-    "sass": "^1.97.3",
-    "slugify": "^1.6.6"
+    "sass": "^1.98.0",
+    "slugify": "^1.6.8"
   },
   "devDependencies": {
     "prettier": "^3.8.1",
