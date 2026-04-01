@@ -9,28 +9,32 @@ import Chapter from "../components/Chapter.astro";
 
 // Generate static paths from book names
 export async function getStaticPaths() {
-	return Object.keys(bibleByTranslation[defaultTranslationId]).map((bookName) => ({
-		params: { book: slugify(bookName, { lower: true }) },
-		props: { bookName }
-	}));
+  return Object.keys(bibleByTranslation[defaultTranslationId]).map(
+    (bookName) => ({
+      params: { book: slugify(bookName, { lower: true }) },
+      props: { bookName },
+    }),
+  );
 }
 
 const { bookName } = Astro.props;
-const book = bibleByTranslation[defaultTranslationId][bookName];
+const book = bibleByTranslation[defaultTranslationId][bookName]!;
 const title = `${bookName} | The Simple Bible`;
-const description = "";
+const description = `Read ${bookName} in the ESV on The Simple Bible.`;
 ---
 
 <Layout title={title} description={description}>
-	<main class='wrapper'>
-		<h1>{bookName}</h1>
-		{Object.entries(book).map(([chapterNumber, verses]) => (
-			<Chapter
-				translation={defaultTranslationId}
-				book={bookName}
-				chapterNumber={chapterNumber}
-				verses={verses as Record<string, string>}
-			/>
-		))}
-	</main>
+  <main class="wrapper">
+    <h1>{bookName}</h1>
+    {
+      Object.entries(book).map(([chapterNumber, verses]) => (
+        <Chapter
+          translation={defaultTranslationId}
+          book={bookName}
+          chapterNumber={chapterNumber}
+          verses={verses as Record<string, string>}
+        />
+      ))
+    }
+  </main>
 </Layout>

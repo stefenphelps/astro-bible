@@ -4,30 +4,39 @@ export const prerender = true;
 import Layout from "../layouts/Layout.astro";
 import { bibleByTranslation } from "../content/bibles";
 import { defaultTranslationId } from "../content/translations";
+import { SITE_NAME } from "../consts";
 
 // Get random book
 const bookNames = Object.keys(bibleByTranslation[defaultTranslationId]);
-const randomBookName = bookNames[Math.floor(Math.random() * bookNames.length)];
-const book = bibleByTranslation[defaultTranslationId][randomBookName];
+const randomBookName = bookNames[Math.floor(Math.random() * bookNames.length)]!;
+const book = bibleByTranslation[defaultTranslationId][randomBookName]!;
 
 // Get random chapter
 const chapterNumbers = Object.keys(book);
-const randomChapterNumber = chapterNumbers[Math.floor(Math.random() * chapterNumbers.length)];
-const chapter = book[randomChapterNumber];
+const randomChapterNumber =
+  chapterNumbers[Math.floor(Math.random() * chapterNumbers.length)]!;
+const chapter = book[randomChapterNumber]!;
 
 // Get random verse
 const verseNumbers = Object.keys(chapter);
-const randomVerseNumber = verseNumbers[Math.floor(Math.random() * verseNumbers.length)];
-const randomVerse = chapter[randomVerseNumber];
+const randomVerseNumber =
+  verseNumbers[Math.floor(Math.random() * verseNumbers.length)]!;
+const randomVerse = chapter[randomVerseNumber]!;
 ---
 
-<Layout title='Error 404 | The Simple Bible' description="Sorry, this page doesn't exist.">
-	<main class='wrapper'>
-		<h1>Error 404</h1>
-		<p>Sorry, you seem to have lost your way. Here's a random verse for you instead:</p>
-		<blockquote>
-			{randomVerse}
-			<cite>{randomBookName} {randomChapterNumber}:{randomVerseNumber}</cite>
-		</blockquote>
-	</main>
+<Layout
+  title={`Error 404 | ${SITE_NAME}`}
+  description="Sorry, this page doesn't exist."
+>
+  <main class="wrapper">
+    <h1>Error 404</h1>
+    <p>
+      Sorry, you seem to have lost your way. Here's a random verse for you
+      instead:
+    </p>
+    <blockquote>
+      {randomVerse}
+      <cite>{randomBookName} {randomChapterNumber}:{randomVerseNumber}</cite>
+    </blockquote>
+  </main>
 </Layout>

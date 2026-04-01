@@ -1,0 +1,118 @@
+---
+import slugify from "slugify";
+import {
+  defaultTranslationId,
+  translationMeta,
+  type TranslationId,
+} from "../content/translations";
+
+interface Props {
+  bible: Record<string, Record<string, Record<string, string>>>;
+  translation?: TranslationId;
+}
+
+const { bible, translation = defaultTranslationId } = Astro.props;
+const isDefaultTranslation = translation === defaultTranslationId;
+const translationLabel =
+  translationMeta.find(({ id }) => id === translation)?.label ??
+  translation.toUpperCase();
+---
+
+<ol class="books">
+  {
+    Object.entries(bible).map(([bookName, chaptersObj]) => {
+      const bookSlug = slugify(bookName, { lower: true });
+      const bookHref = isDefaultTranslation
+        ? `/${bookSlug}/`
+        : `/${translation}/${bookSlug}/`;
+
+      return (
+        <li>
+          <details>
+            <summary>{bookName}</summary>
+            <div class="books-actions">
+              <a data-astro-prefetch="viewport" href={bookHref}>
+                Read {bookName}
+              </a>
+              <span class="books-translation">{translationLabel}</span>
+            </div>
+            <ol class="books-chapters">
+              {Object.keys(chaptersObj).map((chapterNum) => (
+                <li>
+                  <a href={`${bookHref}#chapter-${chapterNum}`}>{chapterNum}</a>
+                </li>
+              ))}
+            </ol>
+          </details>
+        </li>
+      );
+    })
+  }
+</ol>
+
+<style lang="scss">
+  .books {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+
+    > li {
+      font-size: var(--step-5);
+    }
+  }
+
+  details {
+    padding: 0.5rem 0 1.5rem;
+  }
+
+  summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .books-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0.75rem 0 1rem;
+    font-size: var(--step-0);
+  }
+
+  .books-translation {
+    opacity: 0.7;
+  }
+
+  .books-chapters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    font-size: var(--step-0);
+
+    a {
+      border: 1px solid var(--text);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2em;
+      height: 2em;
+
+      &:hover,
+      &:focus {
+        box-shadow: 0 0 0 transparent;
+        background: var(--text);
+        color: var(--bg);
+      }
+    }
+  }
+</style>

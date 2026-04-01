@@ -22,7 +22,9 @@
     "slugify": "^1.6.8"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.8",
     "prettier": "^3.8.1",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^6.0.2"
   }
 }

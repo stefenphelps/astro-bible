@@ -1,82 +1,15 @@
 ---
 export const prerender = true;
 
-import slugify from "slugify";
 import { bibleByTranslation } from "../content/bibles";
 import { defaultTranslationId } from "../content/translations";
+import BooksList from "../components/BooksList.astro";
+import { SITE_DESCRIPTION, SITE_NAME } from "../consts";
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title='The Simple Bible' description='An intentionally simple Bible PWA'>
-	<main class='wrapper'>
-		<ol class="books">
-			{
-				Object.entries(bibleByTranslation[defaultTranslationId]).map(([bookName, chaptersObj]) => (
-					<li>
-						<a data-astro-prefetch="viewport" href={`/${slugify(bookName, { lower: true })}/`}>{bookName}</a>
-						<ol class="books-chapters">
-							{Object.keys(chaptersObj).map((chapterNum) => (
-								<li>
-									<a href={`/${slugify(bookName, { lower: true })}/#chapter-${chapterNum}`}>{chapterNum}</a>
-								</li>
-							))}
-						</ol>
-					</li>
-				))
-			}
-		</ol>
-	</main>
+<Layout title={SITE_NAME} description={SITE_DESCRIPTION}>
+  <main class="wrapper">
+    <BooksList bible={bibleByTranslation[defaultTranslationId]} />
+  </main>
 </Layout>
-
-<script>
-	const books = document.querySelectorAll('main > ol > li > a');
-	books.forEach(function(book) {
-		book.addEventListener('click', function(event) {
-			event.preventDefault();
-			book.classList.toggle('active');
-		})
-	});
-</script>
-
-<style lang="scss">
-	.books {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		text-align: center;
-		> li {
-			font-size: var(--step-5);
-		}
-		&-chapters {
-			display: none;
-			font-size: var(--step-0);
-			margin-left: 1rem;
-			list-style: none;
-			margin: 1rem 0 2rem;
-			padding: 0;
-			flex-wrap: wrap;
-			justify-content: center;
-			gap: 1rem;
-			a {
-				border: 1px solid var(--text);
-				width: 2em;
-				height: 2em;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				border-radius: 2px;
-				&:hover,
-				&:focus {
-					box-shadow: 0 0 0 transparent;
-					background: var(--text);
-					color: var(--bg);
-				}
-			}
-		}
-		a.active {
-			+ ol {
-				display: flex;
-			}
-		}
-	}
-</style>

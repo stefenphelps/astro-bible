@@ -11,9 +11,11 @@ import {
     <h1><a href="/" class="logo">The Bible</a></h1>
     <div class="translation-select-wrap">
       <select class="translation-select" aria-label="Select translation">
-        {translationMeta.map(({ id, label }) => (
-          <option value={id}>{label}</option>
-        ))}
+        {
+          translationMeta.map(({ id, label }) => (
+            <option value={id}>{label}</option>
+          ))
+        }
       </select>
     </div>
     <button class="share-toggle" aria-pressed="false" title="Toggle share mode">
@@ -98,16 +100,27 @@ import {
   <form>
     <div class="pastor-settings" id="pastor-settings" hidden>
       <label for="pastor-denomination">AI Pastor tradition:</label>
-      <select id="pastor-denomination" data-default={defaultPastorDenominationId}>
-        {pastorDenominations.map(({ id, label }) => (
-          <option value={id}>{label}</option>
-        ))}
+      <select
+        id="pastor-denomination"
+        data-default={defaultPastorDenominationId}
+      >
+        {
+          pastorDenominations.map(({ id, label }) => (
+            <option value={id}>{label}</option>
+          ))
+        }
       </select>
     </div>
-    <input type="search" placeholder="Your question..." required />
+    <label class="screen-reader-text" for="question-input">Your question</label>
+    <input
+      id="question-input"
+      type="search"
+      placeholder="Your question..."
+      required
+    />
     <button type="submit">Submit</button>
   </form>
-  <div class="loading">
+  <div class="loading" aria-hidden="true">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
@@ -119,35 +132,75 @@ import {
       ></path>
     </svg>
   </div>
-  <output></output>
+  <output aria-live="polite"></output>
 </dialog>
 <script>
   import Snackbar from "node-snackbar";
-  // drop shadow on the header
+
   const stickyElm = document.querySelector("header");
+  const toggleButton = document.querySelector(".color-mode-toggle");
+  const translationSelect = document.querySelector(".translation-select");
+  const shareToggle = document.querySelector(".share-toggle");
+  const questionButton = document.querySelector(".question");
+  const dialog = document.querySelector("dialog");
+  const closeButton = document.querySelector(".close-button");
+  const form = document.querySelector("dialog form");
+  const loading = document.querySelector(".loading");
+  const output = document.querySelector("output");
+  const questionInput = document.querySelector("dialog input");
+  const pastorSettings = document.querySelector("#pastor-settings");
+  const pastorSecretTrigger = document.querySelector(".pastor-secret-trigger");
+  const pastorDenominationSelect = document.querySelector(
+    "#pastor-denomination",
+  );
+
+  if (
+    !(stickyElm instanceof HTMLElement) ||
+    !(toggleButton instanceof HTMLButtonElement) ||
+    !(translationSelect instanceof HTMLSelectElement) ||
+    !(shareToggle instanceof HTMLButtonElement) ||
+    !(questionButton instanceof HTMLButtonElement) ||
+    !(dialog instanceof HTMLDialogElement) ||
+    !(closeButton instanceof HTMLButtonElement) ||
+    !(form instanceof HTMLFormElement) ||
+    !(loading instanceof HTMLDivElement) ||
+    !(output instanceof HTMLOutputElement) ||
+    !(questionInput instanceof HTMLInputElement) ||
+    !(pastorSettings instanceof HTMLElement) ||
+    !(pastorSecretTrigger instanceof HTMLButtonElement) ||
+    !(pastorDenominationSelect instanceof HTMLSelectElement)
+  ) {
+    throw new Error("Header UI failed to initialize.");
+  }
+
+  // drop shadow on the header
   const observer = new IntersectionObserver(
-    ([e]) => e.target.classList.toggle("isSticky", e.intersectionRatio < 1),
-    { threshold: [1] }
+    (entries) => {
+      const entry = entries[0];
+      if (!entry) {
+        return;
+      }
+      entry.target.classList.toggle("isSticky", entry.intersectionRatio < 1);
+    },
+    { threshold: [1] },
   );
   observer.observe(stickyElm);
 
   // dark mode toggle
   const html = document.documentElement;
-  const toggleButton = document.querySelector(".color-mode-toggle");
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-  const translationSelect = document.querySelector(".translation-select");
   const translations = Array.from(translationSelect.options).map(
-    (option) => option.value
+    (option) => option.value,
   );
-  const shareToggle = document.querySelector(".share-toggle");
 
-  const setColorScheme = (value) => {
+  const setColorScheme = (value: string) => {
     html.dataset.colorScheme = value;
     localStorage.setItem("color-scheme", value);
   };
 
-  if (localStorage.getItem("color-scheme")) {
-    setColorScheme(localStorage.getItem("color-scheme"));
+  const storedScheme = localStorage.getItem("color-scheme");
+  if (storedScheme) {
+    setColorScheme(storedScheme);
   }
 
   toggleButton.addEventListener("click", () => {
@@ -177,7 +230,9 @@ import {
     });
   };
 
-  window.addEventListener("DOMContentLoaded", restoreVersePosition, { once: true });
+  window.addEventListener("DOMContentLoaded", restoreVersePosition, {
+    once: true,
+  });
 
   // share toggle
   const storedShare = localStorage.getItem("share-enabled");
@@ -197,9 +252,12 @@ import {
   // translation selector
   const currentPath = window.location.pathname.replace(/\/+$/, "");
   const pathParts = currentPath.split("/").filter(Boolean);
-  const currentTranslation = translations.includes(pathParts[0])
-    ? pathParts[0]
-    : "esv";
+  const defaultTranslation = translations[0] ?? "esv";
+  const firstPathPart = pathParts[0];
+  const currentTranslation =
+    firstPathPart && translations.includes(firstPathPart)
+      ? firstPathPart
+      : defaultTranslation;
   const storedTranslation = localStorage.getItem("translation");
   translationSelect.value = storedTranslation || currentTranslation;
 
@@ -211,8 +269,9 @@ import {
     const header = document.querySelector("header");
     const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
     const firstVisible =
-      verses.find((verse) => verse.getBoundingClientRect().top >= headerBottom - 1) ??
-      verses[verses.length - 1];
+      verses.find(
+        (verse) => verse.getBoundingClientRect().top >= headerBottom - 1,
+      ) ?? verses[verses.length - 1];
     if (!firstVisible || !firstVisible.id) {
       return;
     }
@@ -239,8 +298,12 @@ import {
     }
     localStorage.setItem("translation", selected);
 
-    const hasTranslation = translations.includes(pathParts[0]);
-    const pathWithoutTranslation = hasTranslation ? pathParts.slice(1) : pathParts;
+    const hasTranslation = firstPathPart
+      ? translations.includes(firstPathPart)
+      : false;
+    const pathWithoutTranslation = hasTranslation
+      ? pathParts.slice(1)
+      : pathParts;
     const basePath = pathWithoutTranslation.join("/");
     storeVersePosition();
 
@@ -258,10 +321,6 @@ import {
   });
 
   // questions popup
-  const questionButton = document.querySelector(".question");
-  const dialog = document.querySelector("dialog");
-  const closeButton = document.querySelector(".close-button");
-
   questionButton.addEventListener("click", function () {
     dialog.showModal();
   });
@@ -270,43 +329,50 @@ import {
   });
 
   // question form submission
-  const form = document.querySelector("dialog form");
-  const loading = document.querySelector(".loading");
-  const output = document.querySelector("output");
-  const questionInput = document.querySelector("dialog input");
   const submitButton = form.querySelector('button[type="submit"]');
-  const pastorSettings = document.querySelector("#pastor-settings");
-  const pastorSecretTrigger = document.querySelector(".pastor-secret-trigger");
-  const pastorDenominationSelect = document.querySelector("#pastor-denomination");
+  if (!(submitButton instanceof HTMLButtonElement)) {
+    throw new Error("Question form submit button is missing.");
+  }
   const pastorDenominationStorageKey = "pastor-denomination";
   const pastorDenominations = Array.from(pastorDenominationSelect.options).map(
-    (option) => option.value
+    (option) => option.value,
   );
   const defaultPastorDenomination =
-    pastorDenominationSelect.dataset.default || pastorDenominations[0];
+    pastorDenominationSelect.dataset.default ||
+    pastorDenominations[0] ||
+    "protestant";
   const storedPastorDenomination = localStorage.getItem(
-    pastorDenominationStorageKey
+    pastorDenominationStorageKey,
   );
-  const selectedPastorDenomination = pastorDenominations.includes(
-    storedPastorDenomination
-  )
-    ? storedPastorDenomination
-    : defaultPastorDenomination;
+  const selectedPastorDenomination =
+    storedPastorDenomination &&
+    pastorDenominations.includes(storedPastorDenomination)
+      ? storedPastorDenomination
+      : defaultPastorDenomination;
 
   pastorDenominationSelect.value = selectedPastorDenomination;
-  localStorage.setItem(pastorDenominationStorageKey, selectedPastorDenomination);
+  localStorage.setItem(
+    pastorDenominationStorageKey,
+    selectedPastorDenomination,
+  );
 
   pastorSecretTrigger.addEventListener("click", () => {
     const isOpen = !pastorSettings.hidden;
     pastorSettings.hidden = isOpen;
-    pastorSecretTrigger.setAttribute("aria-expanded", isOpen ? "false" : "true");
+    pastorSecretTrigger.setAttribute(
+      "aria-expanded",
+      isOpen ? "false" : "true",
+    );
     if (!isOpen) {
       pastorDenominationSelect.focus();
     }
   });
 
   pastorDenominationSelect.addEventListener("change", () => {
-    localStorage.setItem(pastorDenominationStorageKey, pastorDenominationSelect.value);
+    localStorage.setItem(
+      pastorDenominationStorageKey,
+      pastorDenominationSelect.value,
+    );
   });
 
   form.addEventListener("submit", async function (event) {
@@ -377,7 +443,8 @@ import {
       gap: 1rem;
     }
     &.isSticky {
-      box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+      box-shadow:
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px,
         rgba(0, 0, 0, 0) 0px 0px 0px 0px,
         rgba(87, 83, 78, 0.1) 0px 25px 50px -12px;
     }

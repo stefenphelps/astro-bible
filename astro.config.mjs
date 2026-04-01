@@ -1,4 +1,4 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import AstroPWA from "@vite-pwa/astro";
 import sitemap from "@astrojs/sitemap";
 import netlify from "@astrojs/netlify";
@@ -10,6 +10,25 @@ export default defineConfig({
   output: "server",
   compressHTML: true,
   prefetch: true,
+  env: {
+    schema: {
+      OPENAI_API_KEY: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+      OPENAI_KEY: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+      OPENAI_MODEL: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+    },
+  },
   integrations: [
     sitemap(),
     AstroPWA({

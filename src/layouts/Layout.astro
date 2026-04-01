@@ -3,92 +3,98 @@ import "../styles/main.scss";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { pwaInfo } from "virtual:pwa-info";
+import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_NAME } from "../consts";
 
 export interface Props {
-	title: string;
-	description: string;
+  title: string;
+  description: string;
+  image?: string;
 }
 
 const {
-	title = "The Simple Bible",
-	description = "An intentionally simple Bible PWA with offline support and light/dark modes."
+  title = SITE_NAME,
+  description = SITE_DESCRIPTION,
+  image = "/opengraph.png",
 } = Astro.props;
+const siteUrl = Astro.site ?? Astro.url;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
+const socialImageUrl = new URL(image, siteUrl);
 ---
 
-<!DOCTYPE html>
-<html lang='en'>
-	<head>
-		<meta charset='UTF-8' />
-		<meta name='viewport' content='width=device-width, initial-scale=1' />
-		<link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
-		<link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
-		<link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
-		<link rel='mask-icon' href='/safari-pinned-tab.svg' color='#292524' />
-		<meta name='msapplication-TileColor' content='#da532c' />
-		<meta name='theme-color' content='#292524' />
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#292524" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#292524" />
+    <link rel="canonical" href={canonicalUrl} />
 
-		<!-- Facebook Meta Tags -->
-		<meta property='og:url' content='https://astro-bible.netlify.app' />
-		<meta property='og:type' content='website' />
-		<meta property='og:title' content={title} />
-		<meta property='og:description' content={description} />
-		<meta property='og:image' content='https://astro-bible.netlify.app/opengraph.png' />
-		<meta property='og:image:width' content='1200' />
-		<meta property='og:image:height' content='630' />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
-		<!-- Twitter Meta Tags -->
-		<meta name='twitter:card' content='summary_large_image' />
-		<meta property='twitter:domain' content='astro-bible.netlify.app' />
-		<meta property='twitter:url' content='https://astro-bible.netlify.app' />
-		<meta name='twitter:title' content={title} />
-		<meta name='twitter:description' content={description} />
-		<meta name='twitter:image' content='https://astro-bible.netlify.app/opengraph.png' />
-		<title>{title}</title>
-		<meta name='description' content={description} />
-		<meta name='author' content='Stefen Phelps' />
-		{pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
-		<script is:inline>
-			// purposefully make render blocking to prevent flash of wrong theme
-			const setColorScheme = (value) => {
-				document.documentElement.dataset.colorScheme = value;
-				localStorage.setItem("color-scheme", value);
-			};
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE_AUTHOR} />
+    {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
+    <script is:inline>
+      // purposefully make render blocking to prevent flash of wrong theme
+      const setColorScheme = (value) => {
+        document.documentElement.dataset.colorScheme = value;
+        document.documentElement.style.colorScheme = value;
+        localStorage.setItem("color-scheme", value);
+      };
 
-			const storedScheme = localStorage.getItem("color-scheme");
-			if (storedScheme) {
-				setColorScheme(storedScheme);
-			}
-		</script>
-	</head>
-	<body>
-		<Header />
-		<slot />
-		<Footer />
-		<script>
-			import { registerSW } from "virtual:pwa-register";
-			import Snackbar from "node-snackbar";
+      const storedScheme = localStorage.getItem("color-scheme");
+      if (storedScheme) {
+        setColorScheme(storedScheme);
+      }
+    </script>
+  </head>
+  <body>
+    <Header />
+    <slot />
+    <Footer />
+    <script>
+      import { registerSW } from "virtual:pwa-register";
+      import Snackbar from "node-snackbar";
 
-			// pwa stuff
-			if ("serviceWorker" in navigator) {
-				const updateSW = registerSW({
-					onOfflineReady() {
-						Snackbar.show({
-							text: "Offline ready.",
-							actionTextColor: "var(--accent)"
-						});
-					},
-					onNeedRefresh() {
-						Snackbar.show({
-							text: "Update available.",
-							actionText: "Update",
-							actionTextColor: "var(--accent)",
-							onActionClick: function () {
-								updateSW(true);
-							}
-						});
-					}
-				});
-			}
-		</script>
-	</body>
+      // pwa stuff
+      if ("serviceWorker" in navigator) {
+        const updateSW = registerSW({
+          onOfflineReady() {
+            Snackbar.show({
+              text: "Offline ready.",
+              actionTextColor: "var(--accent)",
+            });
+          },
+          onNeedRefresh() {
+            Snackbar.show({
+              text: "Update available.",
+              actionText: "Update",
+              actionTextColor: "var(--accent)",
+              onActionClick: function () {
+                updateSW(true);
+              },
+            });
+          },
+        });
+      }
+    </script>
+  </body>
 </html>

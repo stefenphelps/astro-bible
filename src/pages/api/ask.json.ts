@@ -1,3 +1,5 @@
+import type { APIRoute } from "astro";
+import { OPENAI_API_KEY, OPENAI_KEY, OPENAI_MODEL } from "astro:env/server";
 import {
   defaultPastorDenominationId,
   pastorDenominations,
@@ -6,10 +8,12 @@ import {
 const DEFAULT_MODEL = "gpt-5-nano";
 const MAX_QUESTION_CHARS = 2000;
 const denominationPromptById = new Map(
-  pastorDenominations.map((denomination) => [denomination.id, denomination.prompt])
+  pastorDenominations.map(
+    (denomination) => [denomination.id, denomination.prompt] as const,
+  ),
 );
 
-function getSystemPrompt(denominationId) {
+function getSystemPrompt(denominationId: string) {
   return (
     denominationPromptById.get(denominationId) ||
     denominationPromptById.get(defaultPastorDenominationId) ||
@@ -17,7 +21,10 @@ function getSystemPrompt(denominationId) {
   );
 }
 
-function jsonResponse(body, status) {
+function jsonResponse(
+  body: Record<string, string | undefined>,
+  status: number,
+) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
@@ -26,8 +33,9 @@ function jsonResponse(body, status) {
   });
 }
 
-function getQuestion(input) {
-  const question = input?.question;
+function getQuestion(input: unknown) {
+  const question =
+    typeof input === "object" && input ? Reflect.get(input, "question") : null;
   if (typeof question !== "string") {
     return null;
   }
@@ -40,8 +48,11 @@ function getQuestion(input) {
   return trimmed;
 }
 
-function getDenominationId(input) {
-  const denomination = input?.denomination;
+function getDenominationId(input: unknown) {
+  const denomination =
+    typeof input === "object" && input
+      ? Reflect.get(input, "denomination")
+      : null;
   if (typeof denomination !== "string") {
     return defaultPastorDenominationId;
   }
@@ -52,13 +63,13 @@ function getDenominationId(input) {
     : defaultPastorDenominationId;
 }
 
-export async function POST({ request }) {
-  const apiKey = import.meta.env.OPENAI_API_KEY || import.meta.env.OPENAI_KEY;
+export const POST: APIRoute = async ({ request }) => {
+  const apiKey = OPENAI_API_KEY || OPENAI_KEY;
   if (!apiKey) {
     return jsonResponse({ error: "OpenAI API key is not configured." }, 500);
   }
 
-  let payload;
+  let payload: unknown;
   try {
     payload = await request.json();
   } catch {
@@ -71,7 +82,7 @@ export async function POST({ request }) {
       {
         error: `Please provide a non-empty question up to ${MAX_QUESTION_CHARS} characters.`,
       },
-      400
+      400,
     );
   }
 
@@ -85,11 +96,13 @@ export async function POST({ request }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: import.meta.env.OPENAI_MODEL || DEFAULT_MODEL,
+        model: OPENAI_MODEL || DEFAULT_MODEL,
         input: [
           {
             role: "system",
-            content: [{ type: "input_text", text: getSystemPrompt(denominationId) }],
+            content: [
+              { type: "input_text", text: getSystemPrompt(denominationId) },
+            ],
           },
           {
             role: "user",
@@ -108,27 +121,35 @@ export async function POST({ request }) {
     if (!openaiResponse.ok) {
       const requestId = openaiResponse.headers.get("x-request-id");
       const errorBody = await openaiResponse.text();
-      console.error("OpenAI API error:", openaiResponse.status, requestId, errorBody);
+      console.error(
+        "OpenAI API error:",
+        openaiResponse.status,
+        requestId,
+        errorBody,
+      );
 
       return jsonResponse(
         {
           error: "Failed to generate a response.",
           requestId: requestId || undefined,
         },
-        openaiResponse.status >= 500 ? 502 : openaiResponse.status
+        openaiResponse.status >= 500 ? 502 : openaiResponse.status,
       );
     }
 
     if (!openaiResponse.body) {
-      return jsonResponse({ error: "OpenAI API returned an empty response body." }, 502);
+      return jsonResponse(
+        { error: "OpenAI API returned an empty response body." },
+        502,
+      );
     }
 
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
-    const stream = new ReadableStream({
+    const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
-        const reader = openaiResponse.body.getReader();
+        const reader = openaiResponse.body!.getReader();
         let buffer = "";
         let closed = false;
 
@@ -165,8 +186,14 @@ export async function POST({ request }) {
               }
 
               try {
-                const chunk = JSON.parse(data);
-                if (chunk.type === "response.output_text.delta" && chunk.delta) {
+                const chunk = JSON.parse(data) as {
+                  type?: string;
+                  delta?: string;
+                };
+                if (
+                  chunk.type === "response.output_text.delta" &&
+                  chunk.delta
+                ) {
                   controller.enqueue(encoder.encode(chunk.delta));
                 }
               } catch (error) {
@@ -195,4 +222,4 @@ export async function POST({ request }) {
     console.error("Unexpected error:", error);
     return jsonResponse({ error: "Internal server error." }, 500);
   }
-}
+};
