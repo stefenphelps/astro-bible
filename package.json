@@ -11,20 +11,20 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^7.0.5",
+    "@astrojs/netlify": "^7.0.8",
     "@astrojs/sitemap": "^3.7.2",
     "@vite-pwa/astro": "^1.2.0",
-    "astro": "^6.1.2",
-    "autoprefixer": "^10.4.27",
+    "astro": "^6.3.1",
+    "autoprefixer": "^10.5.0",
     "node-snackbar": "^0.1.16",
     "sanitize.css": "^13.0.0",
-    "sass": "^1.98.0",
-    "slugify": "^1.6.8"
+    "sass": "^1.99.0",
+    "slugify": "^1.6.9"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.8",
-    "prettier": "^3.8.1",
+    "@astrojs/check": "^0.9.9",
+    "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   }
 }
