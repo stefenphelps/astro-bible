@@ -13,9 +13,6 @@ interface Props {
 
 const { bible, translation = defaultTranslationId } = Astro.props;
 const isDefaultTranslation = translation === defaultTranslationId;
-const translationLabel =
-  translationMeta.find(({ id }) => id === translation)?.label ??
-  translation.toUpperCase();
 ---
 
 <ol class="books">
@@ -32,14 +29,6 @@ const translationLabel =
             <summary>
               <span data-book-title>{bookName}</span>
             </summary>
-            <div class="books-actions">
-              <a data-astro-prefetch="viewport" data-book-link href={bookHref}>
-                Read {bookName}
-              </a>
-              <span class="books-translation" data-book-translation>
-                {translationLabel}
-              </span>
-            </div>
             <ol class="books-chapters">
               {Object.keys(chaptersObj).map((chapterNum) => (
                 <li>
@@ -89,19 +78,6 @@ const translationLabel =
     display: none;
   }
 
-  .books-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    margin: 0.75rem 0 1rem;
-    font-size: var(--step-0);
-  }
-
-  .books-translation {
-    opacity: 0.7;
-  }
-
   .books-chapters {
     display: flex;
     flex-wrap: wrap;
@@ -136,23 +112,15 @@ const translationLabel =
 
   const books = document.querySelectorAll<HTMLElement>("[data-book-item]");
   const translationIds = translationMeta.map(({ id }) => id);
-  const translationLabels = new Map(
-    translationMeta.map(({ id, label }) => [id, label]),
-  );
-  const defaultLabel =
-    translationLabels.get(defaultTranslationId) ?? defaultTranslationId.toUpperCase();
 
   const updateHomepageLinks = (translationId: string) => {
-    const label = translationLabels.get(translationId) ?? translationId.toUpperCase();
     books.forEach((book) => {
       const bookSlug = book.dataset.bookSlug;
-      const link = book.querySelector<HTMLAnchorElement>("[data-book-link]");
-      const translation = book.querySelector<HTMLElement>("[data-book-translation]");
       const chapterLinks = book.querySelectorAll<HTMLAnchorElement>(
         "[data-book-chapter-link]",
       );
 
-      if (!bookSlug || !link || !translation) {
+      if (!bookSlug) {
         return;
       }
 
@@ -161,9 +129,6 @@ const translationLabel =
           ? `/${bookSlug}/`
           : `/${translationId}/${bookSlug}/`;
 
-      link.href =
-        bookHref;
-      translation.textContent = label;
       chapterLinks.forEach((chapterLink) => {
         const chapterNum = chapterLink.dataset.chapterNum;
         if (!chapterNum) {
@@ -183,13 +148,6 @@ const translationLabel =
 
     if (homepageTranslation !== defaultTranslationId) {
       updateHomepageLinks(homepageTranslation);
-    } else {
-      books.forEach((book) => {
-        const translation = book.querySelector<HTMLElement>("[data-book-translation]");
-        if (translation) {
-          translation.textContent = defaultLabel;
-        }
-      });
     }
   }
 </script>
