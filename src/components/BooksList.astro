@@ -27,19 +27,29 @@ const translationLabel =
         : `/${translation}/${bookSlug}/`;
 
       return (
-        <li>
+        <li data-book-item data-book-slug={bookSlug}>
           <details>
-            <summary>{bookName}</summary>
+            <summary>
+              <span data-book-title>{bookName}</span>
+            </summary>
             <div class="books-actions">
-              <a data-astro-prefetch="viewport" href={bookHref}>
+              <a data-astro-prefetch="viewport" data-book-link href={bookHref}>
                 Read {bookName}
               </a>
-              <span class="books-translation">{translationLabel}</span>
+              <span class="books-translation" data-book-translation>
+                {translationLabel}
+              </span>
             </div>
             <ol class="books-chapters">
               {Object.keys(chaptersObj).map((chapterNum) => (
                 <li>
-                  <a href={`${bookHref}#chapter-${chapterNum}`}>{chapterNum}</a>
+                  <a
+                    data-book-chapter-link
+                    data-chapter-num={chapterNum}
+                    href={`${bookHref}#chapter-${chapterNum}`}
+                  >
+                    {chapterNum}
+                  </a>
                 </li>
               ))}
             </ol>
@@ -63,7 +73,11 @@ const translationLabel =
   }
 
   details {
-    padding: 0.5rem 0 1.5rem;
+    padding: 0.5rem 0 0;
+  }
+
+  details[open] {
+    padding-bottom: 1.5rem;
   }
 
   summary {
@@ -116,3 +130,66 @@ const translationLabel =
     }
   }
 </style>
+
+<script>
+  import { defaultTranslationId, translationMeta } from "../content/translations";
+
+  const books = document.querySelectorAll<HTMLElement>("[data-book-item]");
+  const translationIds = translationMeta.map(({ id }) => id);
+  const translationLabels = new Map(
+    translationMeta.map(({ id, label }) => [id, label]),
+  );
+  const defaultLabel =
+    translationLabels.get(defaultTranslationId) ?? defaultTranslationId.toUpperCase();
+
+  const updateHomepageLinks = (translationId: string) => {
+    const label = translationLabels.get(translationId) ?? translationId.toUpperCase();
+    books.forEach((book) => {
+      const bookSlug = book.dataset.bookSlug;
+      const link = book.querySelector<HTMLAnchorElement>("[data-book-link]");
+      const translation = book.querySelector<HTMLElement>("[data-book-translation]");
+      const chapterLinks = book.querySelectorAll<HTMLAnchorElement>(
+        "[data-book-chapter-link]",
+      );
+
+      if (!bookSlug || !link || !translation) {
+        return;
+      }
+
+      const bookHref =
+        translationId === defaultTranslationId
+          ? `/${bookSlug}/`
+          : `/${translationId}/${bookSlug}/`;
+
+      link.href =
+        bookHref;
+      translation.textContent = label;
+      chapterLinks.forEach((chapterLink) => {
+        const chapterNum = chapterLink.dataset.chapterNum;
+        if (!chapterNum) {
+          return;
+        }
+        chapterLink.href = `${bookHref}#chapter-${chapterNum}`;
+      });
+    });
+  };
+
+  if (window.location.pathname === "/") {
+    const storedTranslation = localStorage.getItem("translation");
+    const homepageTranslation =
+      storedTranslation && translationIds.includes(storedTranslation)
+        ? storedTranslation
+        : defaultTranslationId;
+
+    if (homepageTranslation !== defaultTranslationId) {
+      updateHomepageLinks(homepageTranslation);
+    } else {
+      books.forEach((book) => {
+        const translation = book.querySelector<HTMLElement>("[data-book-translation]");
+        if (translation) {
+          translation.textContent = defaultLabel;
+        }
+      });
+    }
+  }
+</script>
